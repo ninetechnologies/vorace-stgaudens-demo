@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
+<meta name="theme-color" content="#6B1620">
+<title>Vorace — Pizzeria & Restaurant à Saint-Gaudens</title>
+<meta name="description" content="Vorace, pizzeria artisanale et restaurant au coeur de Saint-Gaudens. Pizzas au feu de bois, savoir-faire italien, ouvert du mardi au samedi soir. Réservez votre table en ligne.">
+<meta property="og:title" content="Vorace — Pizzeria & Restaurant Saint-Gaudens">
+<meta property="og:description" content="4,9 sur Google. La pizza artisanale de Saint-Gaudens, par Flo. Réservez votre table.">
+<meta property="og:type" content="restaurant">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Bodoni+Moda:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bordeaux:#6B1620;
+  --bordeaux-dark:#4A0E16;
+  --bordeaux-deep:#2E0810;
+  --cream:#F5EFE6;
+  --cream-warm:#EDE3D3;
+  --gold:#C9A961;
+  --gold-bright:#D4B976;
+  --ink:#1A1A1A;
+  --ink-soft:#3D3D3D;
+  --muted:#7A6F66;
+  --surface:#FFFFFF;
+  --border:rgba(107,22,32,0.15);
+  --shadow-sm:0 2px 12px rgba(46,8,16,0.06);
+  --shadow-md:0 8px 32px rgba(46,8,16,0.12);
+  --shadow-lg:0 20px 60px rgba(46,8,16,0.18);
+  --serif:'Bodoni Moda',Georgia,serif;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+  --cursive:'Allura',cursive;
+  --radius:14px;
+  --radius-lg:22px;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--sans);
+  font-weight:400;
+  line-height:1.6;
+  color:var(--ink);
+  background:var(--cream);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+img{max-width:100%;display:block;height:auto}
+a{color:inherit;text-decoration:none;transition:color .25s ease}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+.container{width:100%;max-width:1240px;margin:0 auto;padding:0 24px}
+
+/* ===== NAVBAR ===== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  background:rgba(245,239,230,0);
+  backdrop-filter:blur(0);
+  transition:background .3s ease, backdrop-filter .3s ease, box-shadow .3s ease, padding .3s ease;
+  padding:18px 0;
+}
+.nav.scrolled{
+  background:rgba(245,239,230,0.92);
+  backdrop-filter:saturate(180%) blur(14px);
+  box-shadow:var(--shadow-sm);
+  padding:12px 0;
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.nav-logo{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:.5px;color:var(--bordeaux)}
+.nav .nav-logo{color:var(--cream)}
+.nav.scrolled .nav-logo{color:var(--bordeaux)}
+.nav-logo-mark{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--bordeaux);
+  display:grid;place-items:center;
+  font-family:var(--serif);font-weight:800;font-size:22px;color:var(--cream);
+  font-style:italic;line-height:1;
+  box-shadow:inset 0 -2px 6px rgba(0,0,0,.15);
+}
+.nav-links{display:flex;align-items:center;gap:32px}
+.nav-links a{font-size:14px;font-weight:500;color:var(--cream);position:relative;padding:6px 0}
+.nav.scrolled .nav-links a{color:var(--ink-soft)}
+.nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .35s ease}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--gold);color:var(--bordeaux-deep);
+  padding:11px 22px;border-radius:999px;
+  font-size:14px;font-weight:600;letter-spacing:.3px;
+  transition:transform .25s ease, box-shadow .25s ease, background .25s ease;
+}
+.nav-cta:hover{background:var(--gold-bright);transform:translateY(-1px);box-shadow:0 8px 24px rgba(201,169,97,.4)}
+.nav-burger{display:none;width:36px;height:36px;flex-direction:column;gap:5px;justify-content:center;align-items:center}
+.nav-burger span{display:block;width:22px;height:1.5px;background:var(--cream);transition:transform .3s ease, opacity .3s ease, background .3s ease}
+.nav.scrolled .nav-burger span{background:var(--ink)}
+.nav-burger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-burger.open span:nth-child(2){opacity:0}
+.nav-burger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* ===== HERO ===== */
+.hero{
+  position:relative;min-height:100vh;
+  background:
+    linear-gradient(180deg,rgba(46,8,16,.55) 0%,rgba(46,8,16,.75) 100%),
+    url('https://images.unsplash.com/photo-1593504049359-74330189a345?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+  color:var(--cream);
+  display:flex;align-items:center;justify-content:center;
+  padding:120px 24px 80px;
+  text-align:center;
+  overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at center, transparent 0%, rgba(46,8,16,.4) 100%);
+  pointer-events:none;
+}
+.hero-content{position:relative;z-index:2;max-width:780px;animation:fadeUp 1.2s cubic-bezier(.2,.8,.2,1) both}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(245,239,230,.12);
+  border:1px solid rgba(245,239,230,.25);
+  backdrop-filter:blur(10px);
+  padding:8px 18px;border-radius:999px;
+  font-size:13px;font-weight:500;
+  margin-bottom:28px;letter-spacing:.5px;
+}
+.hero-badge .star{color:var(--gold-bright)}
+.hero h1{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(56px,11vw,128px);
+  line-height:.95;letter-spacing:-1.5px;
+  margin-bottom:8px;
+}
+.hero h1 em{font-style:italic;color:var(--gold-bright);font-weight:400}
+.hero .tagline{
+  font-family:var(--cursive);
+  font-size:clamp(28px,5vw,42px);
+  color:var(--cream-warm);
+  margin-bottom:8px;
+  letter-spacing:1px;
+}
+.hero .sub{font-size:14px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,239,230,.7);margin-bottom:48px}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 32px;border-radius:999px;
+  font-size:14px;font-weight:600;letter-spacing:.4px;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, background .25s ease;
+  white-space:nowrap;
+}
+.btn-primary{background:var(--gold);color:var(--bordeaux-deep)}
+.btn-primary:hover{background:var(--gold-bright);transform:translateY(-2px);box-shadow:0 14px 36px rgba(201,169,97,.5)}
+.btn-ghost{background:transparent;color:var(--cream);border:1px solid rgba(245,239,230,.4)}
+.btn-ghost:hover{background:rgba(245,239,230,.1);transform:translateY(-2px)}
+.btn-dark{background:var(--bordeaux);color:var(--cream)}
+.btn-dark:hover{background:var(--bordeaux-dark);transform:translateY(-2px);box-shadow:0 14px 36px rgba(107,22,32,.4)}
+.hero-scroll{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,239,230,.6);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  animation:bounce 2.4s ease-in-out infinite;
+}
+.hero-scroll .line{width:1px;height:36px;background:rgba(245,239,230,.4)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-6px)}}
+
+/* ===== SECTIONS COMMON ===== */
+section{padding:120px 0;position:relative}
+.section-label{
+  font-size:12px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--bordeaux);font-weight:600;
+  margin-bottom:18px;display:inline-block;
+}
+.section-title{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(40px,6vw,68px);
+  line-height:1.05;letter-spacing:-1px;
+  color:var(--bordeaux-deep);
+  margin-bottom:24px;
+}
+.section-title em{font-style:italic;color:var(--bordeaux)}
+.section-intro{font-size:18px;color:var(--ink-soft);max-width:640px;margin-bottom:64px;line-height:1.7}
+
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s ease, transform .9s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+/* ===== A PROPOS ===== */
+.about{background:var(--cream)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-image{position:relative;border-radius:var(--radius-lg);overflow:hidden;aspect-ratio:4/5;box-shadow:var(--shadow-lg)}
+.about-image img{width:100%;height:100%;object-fit:cover;transition:transform 1.6s cubic-bezier(.2,.8,.2,1)}
+.about-image:hover img{transform:scale(1.04)}
+.about-image::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(46,8,16,.3) 100%)}
+.about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:48px;padding-top:48px;border-top:1px solid var(--border)}
+.stat-num{font-family:var(--serif);font-weight:700;font-size:48px;color:var(--bordeaux);line-height:1;letter-spacing:-1px}
+.stat-num span{font-size:24px;color:var(--gold)}
+.stat-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:8px;font-weight:500}
+
+/* ===== MENU ===== */
+.menu{background:var(--bordeaux-deep);color:var(--cream)}
+.menu .section-label{color:var(--gold-bright)}
+.menu .section-title{color:var(--cream)}
+.menu .section-title em{color:var(--gold-bright)}
+.menu .section-intro{color:rgba(245,239,230,.75)}
+.menu-categories{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:48px;justify-content:center}
+.menu-tab{
+  background:rgba(245,239,230,.08);
+  border:1px solid rgba(245,239,230,.15);
+  color:var(--cream);
+  padding:10px 22px;border-radius:999px;
+  font-size:13px;font-weight:500;letter-spacing:.5px;
+  transition:background .25s ease, border-color .25s ease, color .25s ease;
+}
+.menu-tab:hover{background:rgba(245,239,230,.14)}
+.menu-tab.active{background:var(--gold);color:var(--bordeaux-deep);border-color:var(--gold)}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:28px}
+.menu-card{
+  background:rgba(245,239,230,.04);
+  border:1px solid rgba(245,239,230,.08);
+  border-radius:var(--radius-lg);overflow:hidden;
+  transition:transform .4s cubic-bezier(.2,.8,.2,1), border-color .3s ease, box-shadow .3s ease;
+  cursor:pointer;
+}
+.menu-card:hover{transform:translateY(-6px);border-color:rgba(201,169,97,.4);box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.menu-card-img{aspect-ratio:5/4;overflow:hidden;background:#222}
+.menu-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .9s ease}
+.menu-card:hover .menu-card-img img{transform:scale(1.08)}
+.menu-card-body{padding:22px 24px 24px}
+.menu-card-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:8px}
+.menu-card h3{font-family:var(--serif);font-weight:600;font-size:22px;letter-spacing:.3px;color:var(--cream)}
+.menu-card .price{font-family:var(--serif);font-weight:600;font-size:20px;color:var(--gold-bright);white-space:nowrap}
+.menu-card p{font-size:14px;color:rgba(245,239,230,.7);line-height:1.6}
+.menu-badge{
+  display:inline-block;
+  background:var(--gold);color:var(--bordeaux-deep);
+  font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
+  padding:4px 10px;border-radius:999px;margin-top:10px;
+}
+
+/* ===== RESERVATION ===== */
+.reservation{background:var(--cream-warm);position:relative;overflow:hidden}
+.reservation::before{
+  content:"";position:absolute;right:-200px;top:-200px;width:600px;height:600px;
+  background:radial-gradient(circle, rgba(107,22,32,.06) 0%, transparent 70%);
+  pointer-events:none;
+}
+.reservation-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:start}
+.reservation-form{
+  background:var(--surface);
+  border-radius:var(--radius-lg);
+  padding:48px;
+  box-shadow:var(--shadow-md);
+  position:relative;
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:24px}
+.form-grid.full{grid-template-columns:1fr}
+.field label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:8px}
+.field input,.field select,.field textarea{
+  width:100%;padding:14px 16px;
+  background:var(--cream);
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-family:inherit;font-size:15px;color:var(--ink);
+  transition:border-color .25s ease, background .25s ease;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--bordeaux);background:var(--surface);
+}
+.field textarea{resize:vertical;min-height:96px}
+.reservation-info h3{font-family:var(--serif);font-weight:400;font-size:36px;line-height:1.1;color:var(--bordeaux-deep);margin-bottom:18px}
+.reservation-info p{font-size:16px;color:var(--ink-soft);line-height:1.7;margin-bottom:32px}
+.hours-list{list-style:none;display:flex;flex-direction:column;gap:14px}
+.hours-list li{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 0;border-bottom:1px solid var(--border);
+  font-size:15px;
+}
+.hours-list li:last-child{border-bottom:none}
+.hours-list .day{font-weight:600;color:var(--ink)}
+.hours-list .time{color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.hours-list .closed{color:var(--muted);font-style:italic}
+.hours-list .now-open{
+  background:rgba(22,163,74,.1);
+  color:#16a34a;font-size:11px;font-weight:700;
+  padding:3px 10px;border-radius:999px;
+  letter-spacing:1px;text-transform:uppercase;
+  margin-left:8px;
+}
+
+/* ===== GALERIE ===== */
+.gallery{background:var(--cream)}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:200px;gap:14px}
+.gallery-item{
+  position:relative;overflow:hidden;border-radius:var(--radius);
+  cursor:pointer;background:var(--bordeaux-deep);
+  transition:transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.gallery-item:hover{transform:scale(.98)}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.8,.2,1), filter .4s ease}
+.gallery-item:hover img{transform:scale(1.08);filter:brightness(.85)}
+.gallery-item:nth-child(1){grid-column:span 2;grid-row:span 2}
+.gallery-item:nth-child(4){grid-row:span 2}
+.gallery-item:nth-child(6){grid-column:span 2}
+
+/* ===== AVIS ===== */
+.reviews{background:var(--bordeaux-deep);color:var(--cream);position:relative;overflow:hidden}
+.reviews::before{
+  content:"";position:absolute;left:-200px;bottom:-200px;width:600px;height:600px;
+  background:radial-gradient(circle, rgba(201,169,97,.08) 0%, transparent 70%);
+  pointer-events:none;
+}
+.reviews .section-title{color:var(--cream)}
+.reviews .section-title em{color:var(--gold-bright)}
+.reviews-header{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:32px;margin-bottom:64px}
+.google-badge{
+  display:inline-flex;align-items:center;gap:14px;
+  background:rgba(245,239,230,.06);
+  border:1px solid rgba(245,239,230,.12);
+  padding:14px 22px;border-radius:14px;
+}
+.google-badge .g-logo{width:28px;height:28px}
+.google-badge .stars{color:var(--gold-bright);font-size:18px;letter-spacing:2px}
+.google-badge .rating-text{font-size:14px;color:rgba(245,239,230,.85)}
+.google-badge .rating-text strong{color:var(--cream)}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}
+.review-card{
+  background:rgba(245,239,230,.04);
+  border:1px solid rgba(245,239,230,.08);
+  border-radius:var(--radius-lg);
+  padding:32px;
+  transition:border-color .3s ease, transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.review-card:hover{border-color:rgba(201,169,97,.3);transform:translateY(-4px)}
+.review-stars{color:var(--gold-bright);font-size:16px;margin-bottom:18px;letter-spacing:2px}
+.review-text{font-size:16px;line-height:1.7;color:rgba(245,239,230,.88);margin-bottom:24px;font-style:italic}
+.review-author{display:flex;align-items:center;gap:14px}
+.review-avatar{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--bordeaux));
+  display:grid;place-items:center;
+  color:var(--cream);font-weight:700;font-size:16px;font-family:var(--serif);
+}
+.review-meta{font-size:13px;color:rgba(245,239,230,.6)}
+.review-meta strong{display:block;color:var(--cream);font-weight:600;font-size:14px;margin-bottom:2px}
+
+/* ===== CONTACT ===== */
+.contact{background:var(--cream);position:relative}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:stretch}
+.contact-map{
+  border-radius:var(--radius-lg);overflow:hidden;
+  box-shadow:var(--shadow-md);
+  min-height:520px;
+}
+.contact-map iframe{width:100%;height:100%;border:0;display:block;min-height:520px;filter:saturate(.95) contrast(1.05)}
+.contact-info{display:flex;flex-direction:column;justify-content:center}
+.contact-list{display:flex;flex-direction:column;gap:28px;margin-top:40px}
+.contact-row{display:flex;gap:18px;align-items:flex-start}
+.contact-icon{
+  width:46px;height:46px;border-radius:12px;
+  background:var(--bordeaux);color:var(--cream);
+  display:grid;place-items:center;flex-shrink:0;
+}
+.contact-icon svg{width:20px;height:20px}
+.contact-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:4px}
+.contact-value{font-size:17px;color:var(--ink);font-weight:500}
+.contact-value a:hover{color:var(--bordeaux)}
+
+/* ===== FOOTER ===== */
+.footer{background:var(--ink);color:rgba(245,239,230,.7);padding:64px 0 32px}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;padding-bottom:48px;border-bottom:1px solid rgba(245,239,230,.1)}
+.footer-brand{font-family:var(--serif);font-weight:400;font-size:32px;color:var(--cream);margin-bottom:14px}
+.footer-brand em{font-style:italic;color:var(--gold-bright)}
+.footer p{font-size:14px;line-height:1.7;max-width:380px}
+.footer h4{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--cream);margin-bottom:20px;font-weight:600}
+.footer ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer ul a{font-size:14px;color:rgba(245,239,230,.7)}
+.footer ul a:hover{color:var(--gold-bright)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;padding-top:32px;font-size:12px;color:rgba(245,239,230,.5)}
+.footer-socials{display:flex;gap:12px}
+.footer-socials a{
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(245,239,230,.08);
+  display:grid;place-items:center;
+  transition:background .25s ease, transform .25s ease;
+}
+.footer-socials a:hover{background:var(--bordeaux);transform:translateY(-2px)}
+.footer-socials svg{width:16px;height:16px;color:var(--cream)}
+
+/* ===== FLOATING CALL ===== */
+.float-call{
+  position:fixed;bottom:24px;right:24px;z-index:40;
+  background:var(--bordeaux);color:var(--cream);
+  width:60px;height:60px;border-radius:50%;
+  display:grid;place-items:center;
+  box-shadow:0 12px 32px rgba(107,22,32,.4);
+  transition:transform .3s ease, background .25s ease;
+  animation:pulse 2.5s ease-in-out infinite;
+}
+.float-call:hover{transform:scale(1.08);background:var(--bordeaux-dark)}
+.float-call svg{width:24px;height:24px}
+@keyframes pulse{
+  0%,100%{box-shadow:0 12px 32px rgba(107,22,32,.4), 0 0 0 0 rgba(107,22,32,.5)}
+  50%{box-shadow:0 12px 32px rgba(107,22,32,.4), 0 0 0 16px rgba(107,22,32,0)}
+}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(120px);
+  background:var(--ink);color:var(--cream);
+  padding:14px 24px;border-radius:12px;
+  font-size:14px;font-weight:500;
+  box-shadow:var(--shadow-lg);
+  z-index:60;opacity:0;
+  transition:transform .4s cubic-bezier(.2,.8,.2,1), opacity .3s ease;
+  display:flex;align-items:center;gap:10px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast .check{width:20px;height:20px;color:var(--gold-bright)}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:960px){
+  .nav-links{
+    position:fixed;top:0;right:0;width:80%;max-width:340px;height:100vh;
+    background:var(--bordeaux-deep);
+    flex-direction:column;justify-content:center;align-items:flex-start;
+    padding:60px 36px;gap:24px;
+    transform:translateX(100%);transition:transform .4s cubic-bezier(.2,.8,.2,1);
+    z-index:45;
+  }
+  .nav-links.open{transform:translateX(0)}
+  .nav-links a{color:var(--cream)!important;font-size:18px}
+  .nav-burger{display:flex;z-index:46;position:relative}
+  .nav-cta{display:none}
+
+  section{padding:80px 0}
+  .about-grid{grid-template-columns:1fr;gap:48px}
+  .about-stats{grid-template-columns:repeat(3,1fr);gap:16px}
+  .stat-num{font-size:32px}
+  .reservation-grid{grid-template-columns:1fr;gap:48px}
+  .reservation-form{padding:32px 24px}
+  .form-grid{grid-template-columns:1fr}
+  .gallery-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:160px;gap:10px}
+  .gallery-item:nth-child(1){grid-column:span 2;grid-row:span 1}
+  .gallery-item:nth-child(4){grid-row:span 1}
+  .gallery-item:nth-child(6){grid-column:span 2}
+  .contact-grid{grid-template-columns:1fr;gap:32px}
+  .contact-map,.contact-map iframe{min-height:380px}
+  .footer-top{grid-template-columns:1fr;gap:32px}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .hero{background-attachment:scroll;padding:100px 20px 60px;min-height:92vh}
+  .hero h1{font-size:clamp(52px,16vw,84px)}
+  .reviews-header{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-mark">V</span>
+      <span>Vorace</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#about">Maison</a>
+      <a href="#menu">Carte</a>
+      <a href="#galerie">Galerie</a>
+      <a href="#avis">Avis</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#reserver" class="nav-cta">Réserver une table</a>
+    <button class="nav-burger" id="navBurger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="star">★</span>
+      <span><strong>4,9</strong> sur Google • 87 avis</span>
+    </div>
+    <p class="tagline">Une pizza, une histoire</p>
+    <h1>Vorace</h1>
+    <p class="sub">Pizzeria & Restaurant — Saint-Gaudens</p>
+    <div class="hero-ctas">
+      <a href="#reserver" class="btn btn-primary">
+        Réserver une table
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#menu" class="btn btn-ghost">Découvrir la carte</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <span class="line"></span>
+  </div>
+</header>
+
+<!-- ===== À PROPOS ===== -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-image reveal">
+        <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=900&q=80" alt="Le pizzaiolo en train de préparer une pizza">
+      </div>
+      <div class="reveal">
+        <span class="section-label">La maison</span>
+        <h2 class="section-title">Un véritable <em>savoir-faire</em> de la pizza.</h2>
+        <p class="section-intro">
+          Au coeur de Saint-Gaudens, Vorace c'est l'histoire d'une passion italienne. Flo prépare chaque pizza sous vos yeux, avec une pâte travaillée maison et des ingrédients frais sélectionnés un par un. Une cuisine généreuse, sincère, où chaque détail compte.
+        </p>
+        <p style="font-size:16px;color:var(--ink-soft);line-height:1.7">
+          Pizzeria du soir, ouverte du mardi au samedi à partir de 18h30. Sur place ou à emporter, l'expérience reste la même : l'odeur du four, les saveurs justes, et l'accueil de Flo.
+        </p>
+        <div class="about-stats">
+          <div>
+            <div class="stat-num"><span class="count" data-target="4.9">0</span><span>★</span></div>
+            <div class="stat-label">Note Google</div>
+          </div>
+          <div>
+            <div class="stat-num"><span class="count" data-target="87">0</span></div>
+            <div class="stat-label">Avis clients</div>
+          </div>
+          <div>
+            <div class="stat-num"><span class="count" data-target="100">0</span><span>%</span></div>
+            <div class="stat-label">Pâte maison</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MENU ===== -->
+<section class="menu" id="menu">
+  <div class="container">
+    <div style="text-align:center" class="reveal">
+      <span class="section-label">La carte</span>
+      <h2 class="section-title">Les <em>pizzas</em> de la maison.</h2>
+      <p class="section-intro" style="margin:0 auto 64px;text-align:center">
+        Pâte affinée 48h, mozzarella fior di latte, tomate San Marzano. Chaque pizza part au four à 380° pour 90 secondes de pur bonheur.
+      </p>
+    </div>
+
+    <div class="menu-categories reveal">
+      <button class="menu-tab active" data-cat="signature">Signatures</button>
+      <button class="menu-tab" data-cat="classique">Classiques</button>
+      <button class="menu-tab" data-cat="blanche">Blanches</button>
+      <button class="menu-tab" data-cat="autres">Entrées & desserts</button>
+    </div>
+
+    <div class="menu-grid" id="menuGrid">
+      <!-- Cards générées en JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ===== RESERVATION ===== -->
+<section class="reservation" id="reserver">
+  <div class="container">
+    <div class="reservation-grid">
+      <div class="reservation-form reveal">
+        <span class="section-label">Réservez en ligne</span>
+        <h2 class="section-title" style="font-size:clamp(32px,4.5vw,48px);margin-bottom:32px">Votre table en <em>2 minutes</em>.</h2>
+        <form id="resaForm" autocomplete="on" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="resa-date">Date</label>
+              <input type="date" id="resa-date" required>
+            </div>
+            <div class="field">
+              <label for="resa-time">Heure</label>
+              <select id="resa-time" required>
+                <option value="">Choisir</option>
+                <option>18:30</option><option>19:00</option><option>19:30</option>
+                <option>20:00</option><option>20:30</option><option>21:00</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="resa-couverts">Couverts</label>
+              <select id="resa-couverts" required>
+                <option value="">Choisir</option>
+                <option>1 personne</option><option>2 personnes</option><option>3 personnes</option>
+                <option>4 personnes</option><option>5 personnes</option><option>6 personnes</option>
+                <option>7+ personnes</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="resa-tel">Téléphone</label>
+              <input type="tel" id="resa-tel" placeholder="06 12 34 56 78" required>
+            </div>
+          </div>
+          <div class="form-grid full">
+            <div class="field">
+              <label for="resa-nom">Nom</label>
+              <input type="text" id="resa-nom" placeholder="Votre nom" required>
+            </div>
+          </div>
+          <div class="form-grid full">
+            <div class="field">
+              <label for="resa-message">Une demande particulière ?</label>
+              <textarea id="resa-message" placeholder="Allergies, anniversaire, accessibilité..."></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-dark" style="width:100%;justify-content:center;margin-top:8px">
+            Confirmer ma réservation
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <div class="reservation-info reveal">
+        <h3>Nos horaires</h3>
+        <p>Pizzeria du soir uniquement. Pour le service du midi ou les groupes de plus de 8, appelez-nous directement.</p>
+        <ul class="hours-list">
+          <li><span class="day">Lundi</span><span class="time closed">Fermé</span></li>
+          <li><span class="day">Mardi</span><span class="time">18h30 – 21h30</span></li>
+          <li><span class="day">Mercredi</span><span class="time">18h30 – 21h30</span></li>
+          <li><span class="day">Jeudi</span><span class="time">18h30 – 21h30</span></li>
+          <li><span class="day">Vendredi</span><span class="time">18h30 – 21h30</span></li>
+          <li><span class="day">Samedi</span><span class="time">18h30 – 21h30</span></li>
+          <li><span class="day">Dimanche</span><span class="time closed">Fermé</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GALERIE ===== -->
+<section class="gallery" id="galerie">
+  <div class="container">
+    <div style="text-align:center" class="reveal">
+      <span class="section-label">L'atelier</span>
+      <h2 class="section-title">Dans les <em>coulisses</em>.</h2>
+    </div>
+    <div class="gallery-grid reveal">
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1200&q=80" alt="Pizza margherita au feu de bois"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80" alt="Four à bois en action"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1593504049359-74330189a345?auto=format&fit=crop&w=800&q=80" alt="Pizza au four"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1571066811602-716837d681de?auto=format&fit=crop&w=800&q=80" alt="Salle du restaurant"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=800&q=80" alt="Pizza diavola"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1542528180-7bbb1f1f7b9c?auto=format&fit=crop&w=1200&q=80" alt="Ambiance restaurant"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AVIS ===== -->
+<section class="reviews" id="avis">
+  <div class="container">
+    <div class="reviews-header reveal">
+      <div>
+        <span class="section-label">La voix des clients</span>
+        <h2 class="section-title" style="margin-bottom:0">Ils en redemandent.</h2>
+      </div>
+      <div class="google-badge">
+        <svg class="g-logo" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="rating-text"><strong>4,9</strong> sur 5 — 87 avis vérifiés</div>
+        </div>
+      </div>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Une pizzeria absolument incontournable à Saint-Gaudens ! L'accueil est tout simplement exceptionnel grâce à Flo, le propriétaire et pizzaiolo passionné."</p>
+        <div class="review-author">
+          <div class="review-avatar">C</div>
+          <div class="review-meta"><strong>Cocinelle</strong>Visité en novembre 2025</div>
+        </div>
+      </div>
+      <div class="review-card reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Voraces, oui, nous l'avons été ; nous avons dévoré nos pizzas, jusqu'à la dernière miette. Un véritable savoir-faire italien, des produits frais et un accueil chaleureux."</p>
+        <div class="review-author">
+          <div class="review-avatar">J</div>
+          <div class="review-meta"><strong>Josiane J.</strong>Visité en janvier 2026</div>
+        </div>
+      </div>
+      <div class="review-card reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Un véritable savoir-faire de la pizza ! On voit Flo travailler la pâte devant nous, et le résultat est à la hauteur. À recommander les yeux fermés."</p>
+        <div class="review-author">
+          <div class="review-avatar">M</div>
+          <div class="review-meta"><strong>Max Colombel</strong>Visité en février 2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-map reveal">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2871.234567890123!2d0.7234!3d43.1097!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDPCsDA2JzM0LjkiTiAwwrA0NCcyNC4yIkU!5e0!3m2!1sfr!2sfr!4v1716808800000!5m2!1sfr!2sfr&q=13+Rue+D%C3%A9odat+de+S%C3%A9v%C3%A9rac+Saint-Gaudens" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Vorace Pizzeria Saint-Gaudens"></iframe>
+      </div>
+      <div class="contact-info reveal">
+        <span class="section-label">Nous trouver</span>
+        <h2 class="section-title">À deux pas de l'<em>Avenue de l'Isle</em>.</h2>
+        <div class="contact-list">
+          <div class="contact-row">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <div class="contact-label">Adresse</div>
+              <div class="contact-value">13 Rue Déodat de Sévérac<br>31800 Saint-Gaudens</div>
+            </div>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div>
+              <div class="contact-label">Téléphone</div>
+              <div class="contact-value"><a href="tel:+33769917382">07 69 91 73 82</a></div>
+            </div>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <div class="contact-label">Horaires</div>
+              <div class="contact-value">Mardi à samedi<br>18h30 – 21h30</div>
+            </div>
+          </div>
+          <div class="contact-row">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </div>
+            <div>
+              <div class="contact-label">Réseaux</div>
+              <div class="contact-value"><a href="https://www.instagram.com/vorace.pizza/" target="_blank" rel="noopener">@vorace.pizza</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand"><em>Vorace</em></div>
+        <p>Pizzeria & Restaurant à Saint-Gaudens. La pizza italienne comme on l'aime, travaillée à la main par Flo, servie dans un cadre chaleureux.</p>
+      </div>
+      <div>
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#about">La maison</a></li>
+          <li><a href="#menu">La carte</a></li>
+          <li><a href="#reserver">Réserver</a></li>
+          <li><a href="#avis">Avis Google</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>13 Rue Déodat de Sévérac</li>
+          <li>31800 Saint-Gaudens</li>
+          <li><a href="tel:+33769917382">07 69 91 73 82</a></li>
+          <li><a href="https://maps.google.com/?q=Vorace+Pizzeria+Saint-Gaudens" target="_blank" rel="noopener">Itinéraire</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Vorace SASU — SIRET 934 180 639 00015 — Tous droits réservés</div>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/vorace.pizza/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="https://www.facebook.com/p/Vorace-Pizzeria-61566530946394/" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== FLOATING CALL ===== -->
+<a href="tel:+33769917382" class="float-call" aria-label="Appeler Vorace">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+</a>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast">
+  <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span>Votre demande a bien été reçue. Flo vous rappelle.</span>
+</div>
+
+<script>
+/* ===== MENU DATA ===== */
+const PIZZAS = {
+  signature: [
+    {name:'Vorace',price:'15,90 €',desc:'Crème, mozzarella, magret fumé, miel de châtaignier, roquette, copeaux de parmesan',img:'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=600&q=80',badge:'Signature'},
+    {name:'Truffe',price:'17,90 €',desc:'Crème truffée, mozzarella, champignons de Paris, jambon de Parme, huile de truffe',img:'https://images.unsplash.com/photo-1571066811602-716837d681de?auto=format&fit=crop&w=600&q=80',badge:'Premium'},
+    {name:'Burrata',price:'16,50 €',desc:'Sauce tomate San Marzano, burrata des Pouilles, tomates cerises, basilic frais, huile d\'olive',img:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80'},
+    {name:'Diavola',price:'13,90 €',desc:'Sauce tomate, mozzarella, chorizo doux, piment frais, olives noires, origan',img:'https://images.unsplash.com/photo-1593504049359-74330189a345?auto=format&fit=crop&w=600&q=80',badge:'Épicée'}
+  ],
+  classique: [
+    {name:'Margherita',price:'10,90 €',desc:'Sauce tomate San Marzano, mozzarella fior di latte, basilic frais, huile d\'olive',img:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80'},
+    {name:'Reine',price:'12,90 €',desc:'Sauce tomate, mozzarella, jambon blanc, champignons de Paris, olives',img:'https://images.unsplash.com/photo-1542528180-7bbb1f1f7b9c?auto=format&fit=crop&w=600&q=80'},
+    {name:'Quattro Stagioni',price:'13,90 €',desc:'Sauce tomate, mozzarella, jambon, champignons, artichauts, olives noires',img:'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=600&q=80'},
+    {name:'Pepperoni',price:'13,50 €',desc:'Sauce tomate, mozzarella, pepperoni piquant, origan',img:'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80'}
+  ],
+  blanche: [
+    {name:'Quattro Formaggi',price:'14,50 €',desc:'Crème, mozzarella, gorgonzola, parmesan, chèvre, miel',img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80'},
+    {name:'Savoyarde',price:'14,90 €',desc:'Crème, mozzarella, reblochon, lardons, pommes de terre, oignons',img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=600&q=80'},
+    {name:'Carbonara',price:'14,50 €',desc:'Crème, mozzarella, lardons, oeuf, parmesan, poivre noir',img:'https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=600&q=80'},
+    {name:'Forestière',price:'13,90 €',desc:'Crème, mozzarella, champignons mélangés, persillade, jambon cru',img:'https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?auto=format&fit=crop&w=600&q=80'}
+  ],
+  autres: [
+    {name:'Burrata maison',price:'9,50 €',desc:'Burrata des Pouilles, tomates anciennes, basilic, huile d\'olive vierge',img:'https://images.unsplash.com/photo-1608897013039-887f21d8c804?auto=format&fit=crop&w=600&q=80',badge:'Entrée'},
+    {name:'Antipasti',price:'12,00 €',desc:'Planche italienne : charcuterie, fromages, légumes grillés, focaccia',img:'https://images.unsplash.com/photo-1542528180-a1208c5169a5?auto=format&fit=crop&w=600&q=80',badge:'À partager'},
+    {name:'Tiramisu maison',price:'6,90 €',desc:'Mascarpone fouetté, biscuits imbibés de café, cacao amer',img:'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=600&q=80',badge:'Dessert'},
+    {name:'Panna Cotta fruits rouges',price:'5,90 €',desc:'Panna cotta vanille de Madagascar, coulis de fruits rouges frais',img:'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=600&q=80',badge:'Dessert'}
+  ]
+};
+
+const grid = document.getElementById('menuGrid');
+function renderMenu(cat){
+  grid.innerHTML = PIZZAS[cat].map(p => `
+    <article class="menu-card">
+      <div class="menu-card-img"><img src="${p.img}" alt="${p.name}" loading="lazy"></div>
+      <div class="menu-card-body">
+        <div class="menu-card-head">
+          <h3>${p.name}</h3>
+          <span class="price">${p.price}</span>
+        </div>
+        <p>${p.desc}</p>
+        ${p.badge ? `<span class="menu-badge">${p.badge}</span>` : ''}
+      </div>
+    </article>
+  `).join('');
+}
+renderMenu('signature');
+
+document.querySelectorAll('.menu-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.menu-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    renderMenu(tab.dataset.cat);
+  });
+});
+
+/* ===== NAV SCROLL ===== */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 30);
+});
+
+/* ===== BURGER ===== */
+const burger = document.getElementById('navBurger');
+const navLinks = document.getElementById('navLinks');
+burger.addEventListener('click', () => {
+  burger.classList.toggle('open');
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  burger.classList.remove('open');
+  navLinks.classList.remove('open');
+}));
+
+/* ===== REVEAL ===== */
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+}, {threshold:0.15});
+reveals.forEach(r => io.observe(r));
+
+/* ===== COUNTERS ===== */
+const counters = document.querySelectorAll('.count');
+const cio = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseFloat(el.dataset.target);
+    const isDecimal = target % 1 !== 0;
+    const dur = 1400;
+    const start = performance.now();
+    const step = (now) => {
+      const t = Math.min((now-start)/dur, 1);
+      const eased = 1 - Math.pow(1-t, 3);
+      const val = target * eased;
+      el.textContent = isDecimal ? val.toFixed(1) : Math.floor(val);
+      if(t < 1) requestAnimationFrame(step);
+      else el.textContent = isDecimal ? target.toFixed(1) : target;
+    };
+    requestAnimationFrame(step);
+    cio.unobserve(el);
+  });
+}, {threshold:0.5});
+counters.forEach(c => cio.observe(c));
+
+/* ===== FORM RESA ===== */
+const form = document.getElementById('resaForm');
+const toast = document.getElementById('toast');
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const date = document.getElementById('resa-date').value;
+  const time = document.getElementById('resa-time').value;
+  const couv = document.getElementById('resa-couverts').value;
+  const tel = document.getElementById('resa-tel').value;
+  const nom = document.getElementById('resa-nom').value;
+  if(!date || !time || !couv || !tel || !nom){
+    alert('Merci de remplir tous les champs requis.');
+    return;
+  }
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4500);
+  form.reset();
+});
+
+/* ===== DATE MIN AUJOURD'HUI ===== */
+document.getElementById('resa-date').min = new Date().toISOString().split('T')[0];
+</script>
+
+</body>
+</html>
