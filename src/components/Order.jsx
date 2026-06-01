@@ -1,41 +1,76 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCart } from '../hooks/useCart.jsx';
+import { placeOrder, subscribe, getOrders } from '../lib/orders.js';
+import { addStamp, GOAL } from '../lib/loyalty.js';
+
+function chime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [880, 1175].forEach((f, i) => {
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination); o.type = 'sine'; o.frequency.value = f;
+      const t = ctx.currentTime + i * 0.18;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+      o.start(t); o.stop(t + 0.32);
+    });
+  } catch (e) {}
+}
 
 const STEPS = [
   { id: 'cart', label: 'Panier', n: 1 },
-  { id: 'address', label: 'Livraison', n: 2 },
+  { id: 'address', label: 'Vos infos', n: 2 },
   { id: 'time', label: 'Créneau', n: 3 },
   { id: 'payment', label: 'Paiement', n: 4 },
 ];
 
 const fmt = (n) => n.toFixed(2).replace('.', ',') + ' €';
 
-/* Génère les créneaux de livraison sur les 2 prochaines heures, par tranches de 15 min,
- * dans les plages d'ouverture ZIDI : 11h-15h / 18h-23h30 */
+/* Créneaux calés sur les horaires RÉELS de Vorace : Mar–Sam 18h30 – 21h30, fermé Dim+Lun.
+ * Basé sur l'heure réelle ; "Dès que possible" si ouvert, sinon premier créneau du prochain jour ouvert. */
 function generateSlots() {
-  const slots = [];
+  const DAY = 24 * 3600 * 1000;
   const now = new Date();
-  // Pour la démo on simule l'heure actuelle = 18h30 (heure du dîner — créneaux ouverts à coup sûr)
-  const demoNow = new Date();
-  demoNow.setHours(18, 30, 0, 0);
-  const start = new Date(demoNow.getTime() + 30 * 60 * 1000); // +30 min mini
-  // arrondi au quart d'heure supérieur
+  // 0=Dim, 1=Lun, ..., 6=Sam — Vorace fermé Dim+Lun
+  const isClosedDay = (d) => d.getDay() === 0 || d.getDay() === 1;
+
+  const open = new Date(now); open.setHours(18, 30, 0, 0);
+  const close = new Date(now); close.setHours(21, 30, 0, 0);
+
+  let start = new Date(now.getTime() + 20 * 60 * 1000); // 20 min de prépa mini
   start.setMinutes(Math.ceil(start.getMinutes() / 15) * 15, 0, 0);
 
-  for (let i = 0; i < 8; i++) {
+  let dayOffset = 0;
+  // Si aujourd'hui fermé OU déjà après fermeture → on cherche le prochain jour ouvert
+  if (isClosedDay(now) || now > close) {
+    let probe = new Date(now);
+    do {
+      probe = new Date(probe.getTime() + DAY);
+      dayOffset = Math.round((probe - now) / DAY);
+    } while (isClosedDay(probe) && dayOffset < 7);
+    start = new Date(open.getTime() + dayOffset * DAY);
+  } else if (start < open) {
+    start = new Date(open);
+  }
+
+  const lastClose = new Date(close.getTime() + dayOffset * DAY);
+
+  const slots = [];
+  if (dayOffset === 0) {
+    slots.push({ id: 'asap', label: 'Dès que possible', asap: true, eta: 20 });
+  }
+  const labelDay = dayOffset === 1 ? ' (demain)' : dayOffset > 1 ? ` (${['dim', 'lun', 'mar', 'mer', 'jeu', 'ven', 'sam'][start.getDay()]}.)` : '';
+
+  for (let i = 0; i < 10; i++) {
     const t = new Date(start.getTime() + i * 15 * 60 * 1000);
-    const h = t.getHours();
-    const m = t.getMinutes();
-    // dans la plage 18h-23h30
-    if (h < 23 || (h === 23 && m <= 30)) {
-      slots.push({
-        id: `${h}:${m}`,
-        label: `${h}h${String(m).padStart(2, '0')}`,
-        time: t,
-        eta: 25 + i * 3, // minutes estimées
-      });
-    }
+    if (t > lastClose) break;
+    slots.push({
+      id: `${t.getDate()}-${t.getHours()}:${t.getMinutes()}`,
+      label: `${t.getHours()}h${String(t.getMinutes()).padStart(2, '0')}${i === 0 ? labelDay : ''}`,
+      time: t,
+      eta: 20 + i * 3,
+    });
   }
   return slots;
 }
@@ -56,8 +91,14 @@ export default function Order() {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [orderCode, setOrderCode] = useState(null);
   const [paying, setPaying] = useState(false);
+  const [mode, setMode] = useState('place'); // 'place' | 'emporter' — Vorace ne livre pas
+  const [payment, setPayment] = useState('carte'); // 'carte' | 'especes'
+  const [liveStatus, setLiveStatus] = useState('recue'); // suivi temps réel côté client
+  const [loyalty, setLoyalty] = useState(null); // carte de fidélité (résultat après commande)
   const slots = generateSlots();
-  const deliveryFee = 2.50;
+  const deliveryFee = mode === 'livraison' ? 2.5 : 0;
+  const isDelivery = mode === 'livraison';
+  const modeLabel = mode === 'place' ? 'Sur place' : mode === 'emporter' ? 'À emporter' : 'Livraison';
 
   /* Autocomplete via l'API Adresse Data.gouv.fr — gratuite, sans clé, française */
   useEffect(() => {
@@ -85,23 +126,82 @@ export default function Order() {
     };
   }, [address.line]);
 
+  // À chaque changement d'étape, on garde l'utilisateur en haut du module commande
+  // (évite le "saut" vers les sections suivantes quand la hauteur du bloc change)
+  const boxRef = useRef(null);
+  const didMountStep = useRef(false);
+  useEffect(() => {
+    if (!didMountStep.current) { didMountStep.current = true; return; }
+    const el = boxRef.current;
+    if (el) {
+      const y = el.getBoundingClientRect().top + window.scrollY - 88;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }, [step]);
+
+  // Suivi temps réel de la commande passée + notification quand elle est prête
+  useEffect(() => {
+    if (step !== 'success' || !orderCode) return;
+    if ('Notification' in window && Notification.permission === 'default') {
+      try { Notification.requestPermission(); } catch (e) {}
+    }
+    let prev = 'recue';
+    const apply = (list) => {
+      const o = list.find((x) => x.code === orderCode);
+      if (!o) return;
+      setLiveStatus(o.status);
+      if (o.status === 'prete' && prev !== 'prete') {
+        chime();
+        try {
+          if ('Notification' in window && Notification.permission === 'granted')
+            new Notification('Vorace', { body: `Votre commande ${orderCode} est prête !` });
+        } catch (e) {}
+      }
+      prev = o.status;
+    };
+    apply(getOrders());
+    return subscribe(apply);
+  }, [step, orderCode]);
+
   const canGoToAddress = items.length > 0;
   const canGoToTime =
     address.firstName.trim().length > 1 &&
-    address.lastName.trim().length > 1 &&
     address.phone.replace(/\s/g, '').length >= 10 &&
-    selectedAddress !== null;
+    (!isDelivery || selectedAddress !== null);
   const canGoToPayment = selectedSlot !== null;
 
   const handlePay = () => {
-    setPaying(true);
-    setTimeout(() => {
-      // génère un code commande style ZID-1234
-      const code = 'ZID-' + Math.floor(1000 + Math.random() * 9000);
+    const finish = () => {
+      const code = 'GC-' + Math.floor(1000 + Math.random() * 9000);
+      placeOrder({
+        code,
+        status: 'recue',
+        mode,
+        modeLabel,
+        payment,
+        name: `${address.firstName} ${address.lastName}`.trim(),
+        phone: address.phone,
+        address: isDelivery && selectedAddress ? selectedAddress.label : null,
+        note: address.note,
+        slot: selectedSlot ? selectedSlot.label : null,
+        items: items.map((it) => ({
+          name: it.name, qty: it.qty || 1, price: it.price,
+          removed: it.removed || [], extras: it.extras || [],
+        })),
+        total: total + deliveryFee,
+        createdAt: Date.now(),
+      });
+      setLoyalty(addStamp(address.phone));
       setOrderCode(code);
       setPaying(false);
       setStep('success');
-    }, 1600);
+    };
+    if (payment === 'especes') {
+      finish(); // pas de paiement en ligne, on confirme la commande
+    } else {
+      setPaying(true);
+      setTimeout(finish, 1600);
+    }
   };
 
   const handleReset = () => {
@@ -111,6 +211,7 @@ export default function Order() {
     setSelectedAddress(null);
     setSelectedSlot(null);
     setOrderCode(null);
+    setLoyalty(null);
   };
 
   return (
@@ -123,13 +224,13 @@ export default function Order() {
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6 }}
         >
-          <span className="z-eyebrow">Réservation & commande</span>
+          <span className="z-eyebrow">Commande en ligne</span>
           <h2 className="z-order-title">
             Votre table chez Flo, <em>réservée en 2 minutes</em>.
           </h2>
           <p className="z-order-intro">
-            Sur place ou à emporter, dès 18h30 du mardi au samedi. Réservez votre
-            créneau, on garde la table au chaud le temps que la pizza cuit.
+            Pas de commission Uber qui s'ajoute, pas d'attente au téléphone.
+            Commandez directement, on est sur la route dès que c'est cuit.
           </p>
         </motion.div>
 
@@ -167,7 +268,7 @@ export default function Order() {
           </div>
         )}
 
-        <div className="z-order-box">
+        <div className="z-order-box" ref={boxRef}>
           <AnimatePresence mode="wait">
             {/* === ÉTAPE 1 : PANIER === */}
             {step === 'cart' && (
@@ -180,6 +281,18 @@ export default function Order() {
                 className="z-step"
               >
                 <h3 className="z-step-title">Votre panier</h3>
+
+                <div className="z-mode">
+                  {[
+                    { id: 'place', label: 'Sur place', icon: 'M3 11l9-8 9 8M5 10v10h14V10' },
+                    { id: 'emporter', label: 'À emporter', icon: 'M6 2l1 4h10l1-4M5 6h14l-1 15H6L5 6z' },
+                  ].map((m) => (
+                    <button key={m.id} className="z-mode-btn" data-on={mode === m.id} onClick={() => setMode(m.id)}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={m.icon} /></svg>
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
 
                 {items.length === 0 ? (
                   <div className="z-empty">
@@ -208,7 +321,6 @@ export default function Order() {
                           <img src={it.image} alt="" className="z-cart-thumb" />
                           <div className="z-cart-info">
                             <div className="z-cart-name">{it.name}</div>
-                            <div className="z-cart-size">{it.size}</div>
                             {(it.baseChanged || it.removed?.length > 0 || it.extras?.length > 0) && (
                               <div className="z-cart-mods">
                                 {it.baseChanged && (
@@ -274,10 +386,12 @@ export default function Order() {
                         <span>Sous-total ({count} article{count > 1 ? 's' : ''})</span>
                         <span>{fmt(total)}</span>
                       </div>
-                      <div className="z-cart-row">
-                        <span>Livraison</span>
-                        <span>{fmt(deliveryFee)}</span>
-                      </div>
+                      {isDelivery && (
+                        <div className="z-cart-row">
+                          <span>Livraison</span>
+                          <span>{fmt(deliveryFee)}</span>
+                        </div>
+                      )}
                       <div className="z-cart-row z-cart-total">
                         <span>Total</span>
                         <span>{fmt(total + deliveryFee)}</span>
@@ -289,7 +403,7 @@ export default function Order() {
                       disabled={!canGoToAddress}
                       onClick={() => setStep('address')}
                     >
-                      Passer à la livraison
+                      Continuer
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                         <path d="M5 12h14M13 5l7 7-7 7" />
                       </svg>
@@ -309,7 +423,7 @@ export default function Order() {
                 transition={{ duration: 0.3 }}
                 className="z-step"
               >
-                <h3 className="z-step-title">Où on vous livre&nbsp;?</h3>
+                <h3 className="z-step-title">{isDelivery ? 'Où on vous livre ?' : 'Vos coordonnées'}</h3>
 
                 <div className="z-form-grid">
                   <label className="z-field">
@@ -351,6 +465,7 @@ export default function Order() {
                   />
                 </label>
 
+                {isDelivery && (
                 <label className="z-field z-field-address">
                   <span>
                     Adresse de livraison
@@ -414,6 +529,7 @@ export default function Order() {
                     </div>
                   )}
                 </label>
+                )}
 
                 <label className="z-field">
                   <span>Instructions (facultatif)</span>
@@ -455,7 +571,9 @@ export default function Order() {
                 transition={{ duration: 0.3 }}
                 className="z-step"
               >
-                <h3 className="z-step-title">À quelle heure on arrive&nbsp;?</h3>
+                <h3 className="z-step-title">
+                  {isDelivery ? 'À quelle heure on vous livre ?' : mode === 'emporter' ? 'À quelle heure vous récupérez ?' : 'Pour quelle heure ?'}
+                </h3>
                 <p className="z-step-hint">
                   Notre cuisine fonctionne en continu. Choisissez l'horaire qui
                   vous arrange — le chrono démarre quand on sort du four.
@@ -507,10 +625,10 @@ export default function Order() {
 
                 <div className="z-recap">
                   <div className="z-recap-row">
-                    <span className="z-recap-label">Livraison à</span>
+                    <span className="z-recap-label">{modeLabel}</span>
                     <span className="z-recap-value">
-                      {address.firstName} {address.lastName} —{' '}
-                      {selectedAddress?.label}
+                      {address.firstName} {address.lastName}
+                      {isDelivery && selectedAddress ? ` — ${selectedAddress.label}` : ''}
                     </span>
                   </div>
                   <div className="z-recap-row">
@@ -528,30 +646,44 @@ export default function Order() {
                     <span className="z-recap-label">Sous-total</span>
                     <span className="z-recap-value">{fmt(total)}</span>
                   </div>
-                  <div className="z-recap-row">
-                    <span className="z-recap-label">Livraison</span>
-                    <span className="z-recap-value">{fmt(deliveryFee)}</span>
-                  </div>
+                  {isDelivery && (
+                    <div className="z-recap-row">
+                      <span className="z-recap-label">Livraison</span>
+                      <span className="z-recap-value">{fmt(deliveryFee)}</span>
+                    </div>
+                  )}
                   <div className="z-recap-row z-recap-total">
-                    <span className="z-recap-label">Total à payer</span>
+                    <span className="z-recap-label">Total</span>
                     <span className="z-recap-value">
                       {fmt(total + deliveryFee)}
                     </span>
                   </div>
                 </div>
 
+                <div className="z-pay-label">Mode de paiement</div>
                 <div className="z-payment-methods">
-                  <div className="z-payment-method z-payment-method-active">
+                  <button type="button" className="z-payment-method" data-active={payment === 'carte'} onClick={() => setPayment('carte')}>
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="2" y="5" width="20" height="14" rx="2" />
                       <line x1="2" y1="10" x2="22" y2="10" />
                     </svg>
                     <div>
                       <strong>Carte bancaire</strong>
-                      <small>Paiement sécurisé Stripe · 3D Secure</small>
+                      <small>Paiement sécurisé en ligne · 3D Secure</small>
                     </div>
                     <span className="z-payment-radio" />
-                  </div>
+                  </button>
+                  <button type="button" className="z-payment-method" data-active={payment === 'especes'} onClick={() => setPayment('especes')}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="6" width="20" height="12" rx="2" />
+                      <circle cx="12" cy="12" r="2.5" />
+                    </svg>
+                    <div>
+                      <strong>Espèces</strong>
+                      <small>{isDelivery ? 'À régler à la livraison' : 'À régler sur place'}</small>
+                    </div>
+                    <span className="z-payment-radio" />
+                  </button>
                 </div>
 
                 <div className="z-step-actions">
@@ -571,6 +703,13 @@ export default function Order() {
                       <>
                         <span className="z-spinner" />
                         Connexion sécurisée...
+                      </>
+                    ) : payment === 'especes' ? (
+                      <>
+                        Confirmer la commande · {fmt(total + deliveryFee)}
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                          <path d="M5 12l5 5L20 7" />
+                        </svg>
                       </>
                     ) : (
                       <>
@@ -608,30 +747,88 @@ export default function Order() {
 
                 <h3 className="z-success-title">Commande confirmée&nbsp;!</h3>
                 <p className="z-success-sub">
-                  Merci {address.firstName}. Votre commande{' '}
-                  <strong>{orderCode}</strong> est dans le four. On arrive chez
-                  vous vers <strong>{selectedSlot?.label}</strong>.
+                  Merci {address.firstName}. Votre commande <strong>{orderCode}</strong> est dans le four.{' '}
+                  {isDelivery
+                    ? <>On arrive chez vous vers <strong>{selectedSlot?.label}</strong>.</>
+                    : mode === 'emporter'
+                      ? <>À récupérer vers <strong>{selectedSlot?.label}</strong> au 59 Avenue de l'Isle.</>
+                      : <>Votre table vous attend vers <strong>{selectedSlot?.label}</strong>.</>}
                 </p>
 
                 <div className="z-success-detail">
                   <div>
-                    <span>Suivi en temps réel</span>
-                    <strong>Sur votre téléphone</strong>
+                    <span>Mode</span>
+                    <strong>{modeLabel}</strong>
                   </div>
                   <div>
                     <span>Paiement</span>
-                    <strong>Encaissé · {fmt(total + deliveryFee)}</strong>
+                    <strong>
+                      {payment === 'especes'
+                        ? `À régler · ${fmt(total + deliveryFee)}`
+                        : `Encaissé · ${fmt(total + deliveryFee)}`}
+                    </strong>
                   </div>
                 </div>
 
+                {/* Suivi temps réel du statut (mis à jour par la cuisine) */}
+                <div className="z-track">
+                  <div className="z-track-head">Suivi de votre commande</div>
+                  <div className="z-track-steps">
+                    {[
+                      { id: 'recue', label: 'Reçue' },
+                      { id: 'preparation', label: 'En préparation' },
+                      { id: 'prete', label: 'Prête' },
+                    ].map((s, i) => {
+                      const order = ['recue', 'preparation', 'prete'];
+                      const cur = order.indexOf(liveStatus === 'terminee' ? 'prete' : liveStatus);
+                      return (
+                        <div key={s.id} className="z-track-step" data-on={i <= cur} data-active={i === cur}>
+                          <span className="z-track-dot" />
+                          <span className="z-track-label">{s.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {(liveStatus === 'prete' || liveStatus === 'terminee') && (
+                    <motion.div className="z-track-ready" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+                      {isDelivery ? 'Votre commande est prête, on arrive !' : 'Votre commande est prête — à récupérer !'}
+                    </motion.div>
+                  )}
+                </div>
+
+                {loyalty && (
+                  <motion.div className="z-loyalty" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+                    <div className="z-loyalty-head">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                      Carte de fidélité
+                    </div>
+                    {loyalty.reward
+                      ? <div className="z-loyalty-reward">Bravo ! Vous débloquez <strong>un menu offert</strong> sur votre prochaine visite.</div>
+                      : <div className="z-loyalty-prog">Plus que <strong>{GOAL - loyalty.stamps}</strong> commande{GOAL - loyalty.stamps > 1 ? 's' : ''} avant un <strong>menu offert</strong>.</div>}
+                    <div className="z-loyalty-dots">
+                      {Array.from({ length: GOAL }).map((_, i) => (
+                        <span key={i} className="z-loyalty-dot" data-on={i < (loyalty.reward ? GOAL : loyalty.stamps)} />
+                      ))}
+                    </div>
+                    <p className="z-loyalty-note">Rattachée à votre numéro — aucune carte à sortir, aucun compte à créer.</p>
+                  </motion.div>
+                )}
+
                 <p className="z-success-note">
-                  Cette démo s'arrête ici — aucune commande n'a été passée et
-                  aucun paiement n'a été débité.
+                  Vous serez prévenu (notification + SMS) dès que votre commande est prête.
+                  Démo : aucune commande réelle n'est passée, aucun paiement débité.
                 </p>
 
-                <button className="z-btn z-btn-primary" onClick={handleReset}>
-                  Refaire un test
-                </button>
+                <div className="z-success-cta">
+                  <a href="#avis" className="z-btn z-btn-primary z-success-review">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+                    Laissez-nous un avis
+                  </a>
+                  <button className="z-btn-ghost-dark" onClick={handleReset}>
+                    Refaire un test
+                  </button>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -1152,10 +1349,15 @@ export default function Order() {
           border: 1.5px solid var(--z-border);
           border-radius: 14px;
           color: var(--z-text);
+          width: 100%;
+          text-align: left;
+          cursor: pointer;
+          transition: all 0.2s var(--z-ease);
         }
-        .z-payment-method-active {
+        .z-payment-method:hover { border-color: var(--z-charcoal); }
+        .z-payment-method[data-active="true"] {
           border-color: var(--z-green);
-          background: rgba(14, 61, 36, 0.04);
+          background: rgba(36, 28, 24, 0.05);
         }
         .z-payment-method strong {
           display: block;
@@ -1174,9 +1376,48 @@ export default function Order() {
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          border: 2px solid var(--z-green);
-          background:
-            radial-gradient(circle at center, var(--z-green) 0 6px, transparent 6.5px);
+          border: 2px solid var(--z-border);
+          flex-shrink: 0;
+          transition: all 0.2s;
+        }
+        .z-payment-method[data-active="true"] .z-payment-radio {
+          border-color: var(--z-green);
+          background: radial-gradient(circle at center, var(--z-green) 0 6px, transparent 6.5px);
+        }
+        .z-pay-label {
+          font-family: var(--z-font-display);
+          font-weight: 700;
+          font-size: 1rem;
+          color: var(--z-black);
+          margin: 8px 0 12px;
+        }
+        .z-mode {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 8px;
+          margin-bottom: 22px;
+        }
+        .z-mode-btn {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 7px;
+          padding: 14px 8px;
+          border-radius: 14px;
+          border: 1.5px solid var(--z-border);
+          background: var(--z-cream);
+          color: var(--z-text);
+          font-size: 0.82rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s var(--z-ease);
+        }
+        .z-mode-btn:hover { border-color: var(--z-charcoal); }
+        .z-mode-btn[data-on="true"] {
+          background: var(--z-green);
+          color: #fff;
+          border-color: var(--z-green);
+          box-shadow: 0 8px 20px -8px rgba(36, 28, 24, 0.5);
         }
         .z-btn-pay {
           min-width: 180px;
@@ -1256,6 +1497,43 @@ export default function Order() {
           font-style: italic;
           margin: 0 0 20px;
         }
+
+        .z-track {
+          width: 100%; max-width: 420px; margin: 8px auto 22px;
+          background: var(--z-white); border: 1px solid var(--z-border);
+          border-radius: 16px; padding: 20px;
+        }
+        .z-track-head { font-size: 0.74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--z-text-muted); margin-bottom: 16px; }
+        .z-track-steps { display: flex; align-items: flex-start; justify-content: space-between; position: relative; }
+        .z-track-steps::before { content: ''; position: absolute; top: 9px; left: 12%; right: 12%; height: 2px; background: var(--z-border); }
+        .z-track-step { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; position: relative; z-index: 1; }
+        .z-track-dot { width: 20px; height: 20px; border-radius: 50%; background: var(--z-white); border: 2px solid var(--z-border); transition: all .3s var(--z-ease); }
+        .z-track-step[data-on="true"] .z-track-dot { background: var(--z-success); border-color: var(--z-success); }
+        .z-track-step[data-active="true"] .z-track-dot { box-shadow: 0 0 0 0 rgba(22,163,74,.5); animation: ztrack 1.6s infinite; }
+        @keyframes ztrack { 0%{box-shadow:0 0 0 0 rgba(22,163,74,.5)} 70%{box-shadow:0 0 0 8px rgba(22,163,74,0)} 100%{box-shadow:0 0 0 0 rgba(22,163,74,0)} }
+        .z-track-label { font-size: 0.78rem; font-weight: 600; color: var(--z-text-muted); text-align: center; }
+        .z-track-step[data-on="true"] .z-track-label { color: var(--z-text); }
+        .z-track-ready {
+          display: flex; align-items: center; justify-content: center; gap: 10px;
+          margin-top: 18px; padding: 14px; border-radius: 12px;
+          background: var(--z-success); color: #fff; font-weight: 700; font-size: 1rem;
+        }
+
+        .z-loyalty {
+          width: 100%; max-width: 420px; margin: 0 auto 20px;
+          background: linear-gradient(135deg, var(--z-green) 0%, var(--z-green-dark) 100%);
+          color: #fff; border-radius: 16px; padding: 20px 22px; text-align: left;
+        }
+        .z-loyalty-head { display: flex; align-items: center; gap: 8px; font-family: var(--z-font-display); font-weight: 800; font-size: 1.05rem; margin-bottom: 12px; color: var(--z-gold); }
+        .z-loyalty-prog, .z-loyalty-reward { font-size: 0.92rem; line-height: 1.4; }
+        .z-loyalty-reward { color: #ffe6a8; }
+        .z-loyalty-prog strong, .z-loyalty-reward strong { color: #fff; }
+        .z-loyalty-dots { display: flex; flex-wrap: wrap; gap: 7px; margin: 14px 0 10px; }
+        .z-loyalty-dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,.3); background: transparent; transition: all .2s; }
+        .z-loyalty-dot[data-on="true"] { background: var(--z-gold); border-color: var(--z-gold); box-shadow: 0 0 10px -2px var(--z-gold); }
+        .z-loyalty-note { font-size: 0.74rem; color: rgba(255,255,255,.65); margin: 0; }
+        .z-success-cta { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .z-success-review { display: inline-flex; align-items: center; gap: 8px; }
 
         @media (max-width: 540px) {
           .z-form-grid { grid-template-columns: 1fr; }

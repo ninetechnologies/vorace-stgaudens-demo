@@ -1,42 +1,39 @@
-/* ===== ZIDI Pizza — Charte design =====
-   Vert profond italien + Rouge ZIDI + Crème + Or
-   Inspirée logo Vorace bordeaux + ambiance pizzeria italienne moderne
-   ====================================== */
+/* ===== Vorace — Charte design =====
+   Bordeaux profond + Crème + Or italien
+   Inspirée du logo Vorace (V crème sur disque bordeaux)
+   Architecture & utilitaires repris du standard Nine Tech.
+   ============================================ */
 :root {
-  /* Couleurs marque */
-  --z-green: #6B1620;          /* Vert profond façade */
-  --z-green-dark: #4A0E16;
+  /* "green" = teinte primaire foncée de la marque (charbon chaud) */
+  --z-green: #6B1620;          /* Bordeaux profond — primaire Vorace */
+  --z-green-dark: #2E0810;
   --z-green-light: #8B2A38;
-  --z-red: #D62828;             /* Rouge ZIDI logo */
-  --z-red-dark: #9B1B1B;
-  --z-gold: #C9A24B;            /* Or accent */
-  --z-cream: #FBF7F1;           /* Fond crème chaleureux */
-  --z-cream-warm: #F4ECDE;
-  --z-black: #1A1715;           /* Noir chaud (pas pur) */
+  --z-red: #A8232B;             /* Rouge bordeaux — CTA accent */
+  --z-red-dark: #7B181E;
+  --z-gold: #F5A623;            /* Or italien — accents premium */
+  --z-cream: #FBF6EF;           /* Crème chaleureux */
+  --z-cream-warm: #F4EBE0;
+  --z-black: #161210;           /* Noir chaud */
   --z-charcoal: #3A332D;
-  --z-text: #2A2420;
-  --z-text-muted: #6B5F55;
-  --z-border: #E8DFD0;
+  --z-text: #221B16;
+  --z-text-muted: #7A6E64;
+  --z-border: #E9DFD2;
   --z-white: #FFFFFF;
 
-  /* Status */
-  --z-success: #2E8B57;
+  --z-success: #16A34A;
   --z-warning: #D97706;
-  --z-danger: #B91C1C;
+  --z-danger: #DC2626;
 
-  /* Typo */
   --z-font-display: 'Fraunces', 'Playfair Display', Georgia, serif;
   --z-font-body: 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* Espacements */
   --z-radius-sm: 8px;
   --z-radius: 14px;
   --z-radius-lg: 24px;
-  --z-shadow-sm: 0 1px 3px rgba(14, 61, 36, 0.08);
-  --z-shadow: 0 10px 30px -10px rgba(14, 61, 36, 0.18);
-  --z-shadow-lg: 0 25px 60px -15px rgba(14, 61, 36, 0.25);
+  --z-shadow-sm: 0 1px 3px rgba(40, 20, 10, 0.08);
+  --z-shadow: 0 10px 30px -10px rgba(40, 20, 10, 0.18);
+  --z-shadow-lg: 0 25px 60px -15px rgba(40, 20, 10, 0.25);
 
-  /* Anim */
   --z-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -76,7 +73,6 @@ h2 { font-size: clamp(2rem, 5vw, 3.5rem); }
 h3 { font-size: clamp(1.4rem, 3vw, 2rem); }
 
 p { margin: 0; }
-
 a { color: inherit; text-decoration: none; }
 
 button {
@@ -87,28 +83,21 @@ button {
   padding: 0;
 }
 
-/* Utility: container */
 .z-container {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 24px;
 }
-
 @media (min-width: 768px) {
   .z-container { padding: 0 40px; }
 }
 
-/* Section spacing */
-.z-section {
-  padding: 80px 0;
-}
-
+.z-section { padding: 80px 0; }
 @media (min-width: 768px) {
   .z-section { padding: 120px 0; }
 }
 
-/* Buttons */
 .z-btn {
   display: inline-flex;
   align-items: center;
@@ -122,32 +111,27 @@ button {
   white-space: nowrap;
   letter-spacing: 0.01em;
 }
-
 .z-btn-primary {
   background: var(--z-red);
   color: var(--z-white);
-  box-shadow: 0 10px 30px -5px rgba(214, 40, 40, 0.45);
+  box-shadow: 0 10px 30px -5px rgba(215, 42, 30, 0.45);
 }
-
 .z-btn-primary:hover {
   background: var(--z-red-dark);
   transform: translateY(-2px);
-  box-shadow: 0 15px 40px -5px rgba(214, 40, 40, 0.55);
+  box-shadow: 0 15px 40px -5px rgba(215, 42, 30, 0.55);
 }
-
 .z-btn-ghost {
   background: rgba(255, 255, 255, 0.1);
   color: var(--z-white);
   backdrop-filter: blur(10px);
   border: 1.5px solid rgba(255, 255, 255, 0.3);
 }
-
 .z-btn-ghost:hover {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.6);
 }
 
-/* Eyebrow */
 .z-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -158,7 +142,6 @@ button {
   text-transform: uppercase;
   color: var(--z-red);
 }
-
 .z-eyebrow::before {
   content: '';
   width: 28px;

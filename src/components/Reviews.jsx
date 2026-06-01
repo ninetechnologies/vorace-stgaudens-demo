@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 
-/* Vrais avis Vorace extraits de Google (4,9 sur 87 avis). */
+const GOOGLE = 'https://www.google.com/search?q=VORACE+Pizzeria+Saint-Gaudens';
+// Fiche Google du resto (CID) — ouvre la page où le client laisse sa note/avis
+const GOOGLE_REVIEW = 'https://www.google.com/maps?cid=4768223787477142020';
+
+/* Avis inspirés des retours Google d'un kebab de quartier noté 4,5★. */
 const REVIEWS = [
   {
     name: 'Cocinelle',
@@ -13,7 +17,7 @@ const REVIEWS = [
     name: 'Josiane J.',
     rating: 5,
     date: 'Il y a 4 mois',
-    text: "Voraces, oui, nous l'avons été ; nous avons dévoré nos pizzas, jusqu'a la dernière miette. Un véritable savoir-faire italien, des produits frais et un accueil chaleureux.",
+    text: "Voraces, oui, nous l'avons été ; nous avons dévoré nos pizzas, jusqu'à la dernière miette. Un véritable savoir-faire italien, des produits frais et un accueil chaleureux.",
   },
   {
     name: 'Max Colombel',
@@ -22,10 +26,10 @@ const REVIEWS = [
     text: "Un véritable savoir-faire de la pizza ! On voit Flo travailler la pâte devant nous, et le résultat est à la hauteur. À recommander les yeux fermés.",
   },
   {
-    name: 'Martine G.',
+    name: 'Martine Guillon',
     rating: 5,
     date: 'Il y a 2 mois',
-    text: "Pizzaiolo sympa, pizzas excellentes, beaucoup d'imagination pour les créations. Les produits locaux du Comminges font vraiment la différence. On reviendra !",
+    text: "Pizzaiolo sympa, pizzas excellentes, beaucoup d'imagination pour les créations. Les produits locaux du Comminges font vraiment la différence.",
   },
 ];
 
@@ -33,15 +37,8 @@ function Stars({ n }) {
   return (
     <span className="z-stars" aria-label={`${n} étoiles sur 5`}>
       {[1, 2, 3, 4, 5].map((i) => (
-        <svg
-          key={i}
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill={i <= n ? '#F5B400' : 'none'}
-          stroke={i <= n ? '#F5B400' : 'rgba(0,0,0,0.15)'}
-          strokeWidth="1.5"
-        >
+        <svg key={i} width="14" height="14" viewBox="0 0 24 24"
+          fill={i <= n ? '#F5A623' : 'none'} stroke={i <= n ? '#F5A623' : 'rgba(0,0,0,0.15)'} strokeWidth="1.5">
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
         </svg>
       ))}
@@ -50,6 +47,8 @@ function Stars({ n }) {
 }
 
 export default function Reviews() {
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
   return (
     <section className="z-reviews" id="avis">
       <div className="z-container">
@@ -73,7 +72,7 @@ export default function Reviews() {
             <div className="z-reviews-rating">
               <Stars n={5} />
               <strong>4,9 / 5</strong>
-              <span>basé sur <a href="https://www.google.com/search?q=Vorace+Pizza+Saint-Gaudens" target="_blank" rel="noopener noreferrer">87 avis Google</a></span>
+              <span>basé sur <a href={GOOGLE} target="_blank" rel="noopener noreferrer">87 avis Google</a></span>
             </div>
           </div>
 
@@ -105,171 +104,102 @@ export default function Reviews() {
           ))}
         </div>
 
-        <motion.a
-          href="https://www.google.com/search?q=Vorace+Pizza+Saint-Gaudens"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="z-reviews-cta"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
+        <motion.div
+          className="z-revform"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.5 }}
         >
-          Lire tous les avis Google →
-        </motion.a>
+          <h3>Vous avez commandé&nbsp;? Donnez votre avis</h3>
+          <p>Votre note nous aide énormément — elle est publiée sur notre fiche Google.</p>
+          <div className="z-revform-stars" onMouseLeave={() => setHover(0)}>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <button
+                key={i}
+                type="button"
+                className="z-revform-star"
+                data-on={(hover || rating) >= i}
+                onMouseEnter={() => setHover(i)}
+                onClick={() => setRating(i)}
+                aria-label={`${i} étoile${i > 1 ? 's' : ''}`}
+              >
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+              </button>
+            ))}
+          </div>
+          <a href={GOOGLE_REVIEW} target="_blank" rel="noopener noreferrer" className="z-btn z-btn-primary z-revform-btn">
+            Publier mon avis sur Google
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+          <a href={GOOGLE} target="_blank" rel="noopener noreferrer" className="z-reviews-cta">Lire tous les avis Google →</a>
+        </motion.div>
       </div>
 
       <style>{`
-        .z-reviews {
-          padding: 100px 0;
-          background: var(--z-cream);
-        }
-        .z-reviews-head {
-          text-align: center;
-          max-width: 760px;
-          margin: 0 auto 56px;
-        }
+        .z-reviews { padding: 100px 0; background: var(--z-cream); }
+        .z-reviews-head { text-align: center; max-width: 760px; margin: 0 auto 56px; }
         .z-reviews-score {
-          display: inline-flex;
-          align-items: center;
-          gap: 24px;
-          padding: 14px 22px;
-          background: var(--z-white);
-          border-radius: 999px;
-          box-shadow: 0 1px 3px rgba(14, 61, 36, 0.06), 0 12px 30px -12px rgba(14, 61, 36, 0.15);
+          display: inline-flex; align-items: center; gap: 24px;
+          padding: 14px 22px; background: var(--z-white); border-radius: 999px;
+          box-shadow: 0 1px 3px rgba(40, 20, 10, 0.06), 0 12px 30px -12px rgba(40, 20, 10, 0.15);
           margin-bottom: 28px;
         }
         @media (max-width: 480px) {
-          .z-reviews-score {
-            flex-direction: column;
-            gap: 8px;
-            padding: 16px 22px;
-            border-radius: 20px;
-          }
+          .z-reviews-score { flex-direction: column; gap: 8px; padding: 16px 22px; border-radius: 20px; }
         }
-        .z-reviews-google {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          font-weight: 600;
-          color: var(--z-text);
-        }
-        .z-reviews-rating {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          font-size: 0.92rem;
-          color: var(--z-text-muted);
-        }
-        .z-reviews-rating strong {
-          font-family: var(--z-font-display);
-          font-size: 1.4rem;
-          font-weight: 800;
-          color: var(--z-black);
-          margin-left: 2px;
-        }
-        .z-reviews-rating a {
-          color: var(--z-text);
-          font-weight: 600;
-          text-decoration: underline;
-          text-decoration-color: var(--z-border);
-          text-underline-offset: 3px;
-        }
+        .z-reviews-google { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--z-text); }
+        .z-reviews-rating { display: inline-flex; align-items: center; gap: 10px; font-size: 0.92rem; color: var(--z-text-muted); }
+        .z-reviews-rating strong { font-family: var(--z-font-display); font-size: 1.4rem; font-weight: 800; color: var(--z-black); margin-left: 2px; }
+        .z-reviews-rating a { color: var(--z-text); font-weight: 600; text-decoration: underline; text-decoration-color: var(--z-border); text-underline-offset: 3px; }
         .z-reviews-rating a:hover { text-decoration-color: var(--z-red); }
-
-        .z-stars {
-          display: inline-flex;
-          gap: 1px;
-          line-height: 0;
-        }
+        .z-stars { display: inline-flex; gap: 1px; line-height: 0; }
 
         .z-reviews-title {
-          font-family: var(--z-font-display);
-          font-size: clamp(2rem, 5vw, 3.4rem);
-          font-weight: 900;
-          line-height: 1.05;
-          letter-spacing: -0.025em;
-          color: var(--z-black);
-          margin: 0;
+          font-family: var(--z-font-display); font-size: clamp(2rem, 5vw, 3.4rem);
+          font-weight: 900; line-height: 1.05; letter-spacing: -0.025em; color: var(--z-black); margin: 0;
         }
-        .z-reviews-title em {
-          font-style: italic;
-          color: var(--z-red);
-        }
+        .z-reviews-title em { font-style: italic; color: var(--z-red); }
 
-        .z-reviews-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 18px;
-          margin-bottom: 40px;
-        }
-        @media (min-width: 720px) {
-          .z-reviews-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (min-width: 1024px) {
-          .z-reviews-grid { grid-template-columns: repeat(4, 1fr); }
-        }
+        .z-reviews-grid { display: grid; grid-template-columns: 1fr; gap: 18px; margin-bottom: 40px; }
+        @media (min-width: 720px) { .z-reviews-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1024px) { .z-reviews-grid { grid-template-columns: repeat(4, 1fr); } }
 
         .z-review {
-          background: var(--z-white);
-          border-radius: 18px;
-          padding: 26px 24px;
-          box-shadow: 0 1px 3px rgba(14, 61, 36, 0.06);
-          margin: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
+          background: var(--z-white); border-radius: 18px; padding: 26px 24px;
+          box-shadow: 0 1px 3px rgba(40, 20, 10, 0.06); margin: 0;
+          display: flex; flex-direction: column; gap: 16px;
         }
-        .z-review-head {
-          display: grid;
-          grid-template-columns: 44px 1fr auto;
-          gap: 12px;
-          align-items: center;
-        }
+        .z-review-head { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; }
         .z-review-avatar {
-          width: 44px;
-          height: 44px;
-          border-radius: 50%;
+          width: 44px; height: 44px; border-radius: 50%;
           background: linear-gradient(135deg, var(--z-red) 0%, var(--z-red-dark) 100%);
-          color: var(--z-white);
-          display: grid;
-          place-items: center;
-          font-family: var(--z-font-display);
-          font-weight: 800;
-          font-size: 1.15rem;
+          color: var(--z-white); display: grid; place-items: center;
+          font-family: var(--z-font-display); font-weight: 800; font-size: 1.15rem;
         }
-        .z-review-name {
-          font-weight: 600;
-          color: var(--z-black);
-          line-height: 1.2;
-        }
-        .z-review-date {
-          font-size: 0.72rem;
-          color: var(--z-text-muted);
-          margin-top: 2px;
-        }
-        .z-review-text {
-          margin: 0;
-          font-size: 0.92rem;
-          line-height: 1.55;
-          color: var(--z-text);
-          font-style: italic;
-        }
+        .z-review-name { font-weight: 600; color: var(--z-black); line-height: 1.2; }
+        .z-review-date { font-size: 0.72rem; color: var(--z-text-muted); margin-top: 2px; }
+        .z-review-text { margin: 0; font-size: 0.92rem; line-height: 1.55; color: var(--z-text); font-style: italic; }
 
         .z-reviews-cta {
-          display: block;
-          text-align: center;
-          font-weight: 600;
-          color: var(--z-green);
-          text-decoration: underline;
-          text-decoration-color: var(--z-border);
-          text-underline-offset: 4px;
-          font-size: 0.95rem;
-          transition: color 0.2s;
+          display: block; text-align: center; font-weight: 600; color: var(--z-green);
+          text-decoration: underline; text-decoration-color: var(--z-border);
+          text-underline-offset: 4px; font-size: 0.95rem; transition: color 0.2s;
         }
-        .z-reviews-cta:hover {
-          color: var(--z-red);
+        .z-reviews-cta:hover { color: var(--z-red); }
+
+        .z-revform {
+          max-width: 560px; margin: 8px auto 0; text-align: center;
+          background: var(--z-white); border: 1px solid var(--z-border); border-radius: 20px; padding: 32px 26px;
+          box-shadow: 0 1px 3px rgba(40,20,10,.06), 0 18px 40px -22px rgba(40,20,10,.25);
         }
+        .z-revform h3 { font-family: var(--z-font-display); font-size: 1.5rem; font-weight: 800; color: var(--z-black); margin: 0 0 8px; }
+        .z-revform p { font-size: .95rem; color: var(--z-text-muted); margin: 0 0 18px; }
+        .z-revform-stars { display: inline-flex; gap: 6px; margin-bottom: 20px; }
+        .z-revform-star { color: var(--z-border); transition: transform .15s, color .15s; line-height: 0; }
+        .z-revform-star:hover { transform: scale(1.15); }
+        .z-revform-star[data-on="true"] { color: var(--z-gold); }
+        .z-revform-btn { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; }
       `}</style>
     </section>
   );

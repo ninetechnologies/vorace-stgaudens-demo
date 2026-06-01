@@ -4,7 +4,7 @@ import Logo from './Logo.jsx';
 
 const NAV_LINKS = [
   { href: '#menu', label: 'Notre carte' },
-  { href: '#commander', label: 'Réserver' },
+  { href: '#commander', label: 'Commander' },
   { href: '#avis', label: 'Avis' },
   { href: '#contact', label: 'Nous trouver' },
 ];
@@ -12,7 +12,6 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const dblTimerRef = React.useRef(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -20,20 +19,6 @@ export default function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
-  function handleBrandClick(e) {
-    e.preventDefault();
-    if (dblTimerRef.current) {
-      clearTimeout(dblTimerRef.current);
-      dblTimerRef.current = null;
-      window.dispatchEvent(new CustomEvent('vorace:open-admin-gate'));
-    } else {
-      dblTimerRef.current = setTimeout(() => {
-        dblTimerRef.current = null;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 260);
-    }
-  }
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
@@ -54,9 +39,9 @@ export default function Navbar() {
             href="#"
             className="z-nav-brand"
             aria-label="Vorace — Accueil"
-            onClick={handleBrandClick}
+            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
           >
-            <Logo size={48} />
+            <Logo size={46} />
           </a>
 
           <nav className="z-nav-links" aria-label="Navigation principale">
@@ -68,20 +53,16 @@ export default function Navbar() {
           </nav>
 
           <div className="z-nav-cta">
-            <a href="tel:+33769917382" className="z-nav-phone" aria-label="Appeler Vorace">
+            <a href="tel:+33769917382" className="z-nav-phone" aria-label="Appeler Vorace Saint-Gaudens">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z" />
               </svg>
               <span>07 69 91 73 82</span>
             </a>
-            <a href="#commander" className="z-btn z-btn-primary z-nav-btn">Réserver</a>
+            <a href="#commander" className="z-btn z-btn-primary z-nav-btn">Commander</a>
           </div>
 
-          <button
-            className="z-nav-burger"
-            onClick={() => setMenuOpen(true)}
-            aria-label="Ouvrir le menu"
-          >
+          <button className="z-nav-burger" onClick={() => setMenuOpen(true)} aria-label="Ouvrir le menu">
             <span /><span /><span />
           </button>
         </div>
@@ -96,11 +77,7 @@ export default function Navbar() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <button
-              className="z-nav-close"
-              onClick={() => setMenuOpen(false)}
-              aria-label="Fermer le menu"
-            >
+            <button className="z-nav-close" onClick={() => setMenuOpen(false)} aria-label="Fermer le menu">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
@@ -121,6 +98,7 @@ export default function Navbar() {
               <motion.a
                 href="tel:+33769917382"
                 className="z-nav-mobile-phone"
+                onClick={() => setMenuOpen(false)}
                 initial={{ y: 40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 + NAV_LINKS.length * 0.07, duration: 0.5 }}
@@ -139,17 +117,15 @@ export default function Navbar() {
           z-index: 100;
           padding: 18px 0;
           transition: all 0.4s var(--z-ease);
+          --z-logo-color: #FFFFFF;
         }
         .z-nav[data-scrolled="true"] {
-          background: rgba(251, 247, 241, 0.85);
+          background: rgba(251, 246, 239, 0.85);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          box-shadow: 0 1px 0 rgba(14, 61, 36, 0.06);
-          padding: 12px 0;
-          --z-logo-pizza: var(--z-black);
-        }
-        .z-nav:not([data-scrolled="true"]) {
-          --z-logo-pizza: #FFFFFF;
+          box-shadow: 0 1px 0 rgba(40, 20, 10, 0.06);
+          padding: 11px 0;
+          --z-logo-color: var(--z-black);
         }
         .z-nav-inner {
           max-width: 1280px;
@@ -160,31 +136,18 @@ export default function Navbar() {
           justify-content: space-between;
           gap: 24px;
         }
-        .z-nav-brand {
-          display: flex;
-          align-items: center;
-          z-index: 2;
-        }
-        .z-nav-links {
-          display: none;
-          gap: 36px;
-        }
+        .z-nav-brand { display: flex; align-items: center; z-index: 2; }
+        .z-nav-links { display: none; gap: 36px; }
         .z-nav-link {
           font-size: 0.95rem;
           font-weight: 500;
           color: var(--z-white);
           opacity: 0.85;
-          transition: opacity 0.2s;
+          transition: opacity 0.2s, color 0.4s;
         }
-        .z-nav[data-scrolled="true"] .z-nav-link {
-          color: var(--z-text);
-        }
+        .z-nav[data-scrolled="true"] .z-nav-link { color: var(--z-text); }
         .z-nav-link:hover { opacity: 1; }
-        .z-nav-cta {
-          display: none;
-          align-items: center;
-          gap: 20px;
-        }
+        .z-nav-cta { display: none; align-items: center; gap: 20px; }
         .z-nav-phone {
           display: flex;
           align-items: center;
@@ -193,30 +156,18 @@ export default function Navbar() {
           font-weight: 600;
           color: var(--z-white);
           opacity: 0.9;
+          transition: color 0.4s;
         }
-        .z-nav[data-scrolled="true"] .z-nav-phone {
-          color: var(--z-green);
-        }
-        .z-nav-btn {
-          padding: 12px 24px !important;
-          font-size: 0.9rem !important;
-        }
-        .z-nav-burger {
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-          padding: 8px;
-        }
+        .z-nav[data-scrolled="true"] .z-nav-phone { color: var(--z-red); }
+        .z-nav-btn { padding: 12px 24px !important; font-size: 0.9rem !important; }
+        .z-nav-burger { display: flex; flex-direction: column; gap: 5px; padding: 8px; }
         .z-nav-burger span {
-          width: 26px;
-          height: 2px;
+          width: 26px; height: 2px;
           background: var(--z-white);
           border-radius: 2px;
-          transition: background 0.3s;
+          transition: background 0.4s;
         }
-        .z-nav[data-scrolled="true"] .z-nav-burger span {
-          background: var(--z-text);
-        }
+        .z-nav[data-scrolled="true"] .z-nav-burger span { background: var(--z-text); }
 
         @media (min-width: 968px) {
           .z-nav-links { display: flex; }
@@ -229,18 +180,13 @@ export default function Navbar() {
           position: fixed;
           inset: 0;
           z-index: 200;
-          background: var(--z-green);
+          background: var(--z-green-dark);
           color: var(--z-white);
           display: flex;
           align-items: center;
           justify-content: center;
         }
-        .z-nav-close {
-          position: absolute;
-          top: 24px;
-          right: 24px;
-          color: var(--z-white);
-        }
+        .z-nav-close { position: absolute; top: 24px; right: 24px; color: var(--z-white); }
         .z-nav-mobile-links {
           display: flex;
           flex-direction: column;

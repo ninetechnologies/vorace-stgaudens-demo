@@ -1,0 +1,14 @@
+{
+  "name": "Vorace — Pizzeria & Restaurant",
+  "short_name": "Vorace",
+  "description": "Pizzeria artisanale au coeur de Saint-Gaudens.",
+  "icons": [
+    { "src": "/favicon.png", "sizes": "64x64", "type": "image/png" },
+    { "src": "/favicon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#6B1620",
+  "background_color": "#FBF6EF",
+  "display": "standalone",
+  "start_url": "/"
+}

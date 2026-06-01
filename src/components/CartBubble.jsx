@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCart } from '../hooks/useCart.jsx';
 
@@ -6,10 +6,23 @@ const fmt = (n) => n.toFixed(2).replace('.', ',') + ' €';
 
 export default function CartBubble() {
   const { count, total } = useCart();
+  const [onOrder, setOnOrder] = useState(false);
+
+  // Masque la bulle quand la section commande est à l'écran (on y est déjà)
+  useEffect(() => {
+    const el = document.getElementById('commander');
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([e]) => setOnOrder(e.isIntersecting),
+      { threshold: 0.2 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   return (
     <AnimatePresence>
-      {count > 0 && (
+      {count > 0 && !onOrder && (
         <motion.a
           href="#commander"
           className="z-cart-bubble"
