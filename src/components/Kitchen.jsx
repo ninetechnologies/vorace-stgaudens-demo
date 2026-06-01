@@ -235,7 +235,7 @@ export default function Kitchen({ onLogout }) {
       <div id="vorace-ticket" aria-hidden="true">
         {ticket && (
           <div className="vorace-ticket-inner">
-            <div className="vorace-tk-brand">GRILL &amp; CHICKEN</div>
+            <div className="vorace-tk-brand">VORACE</div>
             <div className="vorace-tk-sub">59 Avenue de l'Isle · Saint-Gaudens<br/>07 69 91 73 82</div>
             <div className="vorace-tk-rule" />
             <div className="vorace-tk-line"><b>{ticket.code}</b><span>{timeStr(ticket.createdAt)}</span></div>

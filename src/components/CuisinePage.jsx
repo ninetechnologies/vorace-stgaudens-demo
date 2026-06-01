@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import Kitchen from './Kitchen.jsx';
+import Logo from './Logo.jsx';
 
 /* Identifiants démo (en prod : comptes Firebase Auth par restaurant). */
 const CREDS = { id: 'vorace', mdp: 'cuisine31' };
-const KEY = 'gc_kds_auth';
+const KEY = 'vorace_kds_auth';
 
 export default function CuisinePage() {
   const [authed, setAuthed] = useState(false);
@@ -46,7 +47,7 @@ export default function CuisinePage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        <img src="/logo.jpg" alt="Vorace" className="z-login-logo" />
+        <div className="z-login-logo"><Logo size={88} /></div>
         <h1>Espace cuisine</h1>
         <p className="z-login-sub">Connectez votre tablette pour recevoir les commandes en direct.</p>
 

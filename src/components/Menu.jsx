@@ -29,14 +29,14 @@ export default function Menu() {
   const { addItem } = useCart();
 
   const add = (item, image) => {
-    addItem({ id: item.id || slug(item.name), name: item.name, price: item.price, image: image || '/logo.jpg' });
+    addItem({ id: item.id || slug(item.name), name: item.name, price: item.price, image: image || '/logo.png' });
     setJustAdded(item.id || slug(item.name));
     setTimeout(() => setJustAdded(null), 1100);
   };
 
   const openCustomizer = (name, price, image, cat) => {
     const cfg = customConfig(name, cat);
-    setCustomizing({ id: slug(name), name, price, image: image || '/logo.jpg', ...cfg });
+    setCustomizing({ id: slug(name), name, price, image: image || '/logo.png', ...cfg });
   };
 
   const onCustomConfirm = (cartItem) => {
