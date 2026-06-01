@@ -2,7 +2,7 @@
  * Fidélité par numéro de téléphone (démo) — carte à tampons, pas de compte requis.
  * 10 commandes = un menu offert. En prod : stocké côté Firestore, rattaché au tél du client.
  */
-const KEY = 'gc_loyalty';
+const KEY = 'vorace_loyalty';
 export const GOAL = 10;
 
 const norm = (p) => (p || '').replace(/\D/g, '');

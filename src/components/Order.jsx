@@ -172,7 +172,7 @@ export default function Order() {
 
   const handlePay = () => {
     const finish = () => {
-      const code = 'GC-' + Math.floor(1000 + Math.random() * 9000);
+      const code = 'VR-' + Math.floor(1000 + Math.random() * 9000);
       placeOrder({
         code,
         status: 'recue',

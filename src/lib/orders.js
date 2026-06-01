@@ -4,9 +4,9 @@
  * instantanément sur l'écran cuisine (même appareil). En prod : Firestore temps réel
  * synchronisé entre le téléphone client et la tablette cuisine.
  */
-const KEY = 'gc_orders';
+const KEY = 'vorace_orders';
 const EV = 'vorace:orders';
-export const OPEN_EVENT = 'gc:open-kitchen';
+export const OPEN_EVENT = 'vorace:open-kitchen';
 
 export function getOrders() {
   try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; }
