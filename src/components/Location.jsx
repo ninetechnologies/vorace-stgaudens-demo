@@ -95,24 +95,18 @@ export default function Location() {
                 ))}
               </ul>
               <p className="z-hours-note">
-                <span className="z-pulse-green" /> Ouvert tous les jours · midi & soir
+                <span className="z-pulse-green" /> Pizzeria du soir · Mardi à Samedi
               </p>
             </div>
 
             <div className="z-location-block">
-              <h3>Aussi disponible sur</h3>
-              <a
-                href="https://www.ubereats.com/fr/store/vorace-stgaudens/QwHC6CbvVIWzlPZwkwQNHQ?diningMode=DELIVERY&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMlNhaW50LUdhdWRlbnMlMjIlMkMlMjJyZWZlcmVuY2UlMjIlM0ElMjJDaElKYVpJVUtaRDhxQklSS1AySDZYUjNVajglMjIlMkMlMjJyZWZlcmVuY2VUeXBlJTIyJTNBJTIyZ29vZ2xlX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuMTA2ODk1JTJDJTIybG9uZ2l0dWRlJTIyJTNBMC43MjM3NjI5OTk5OTk5OTk5JTdE"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="z-partner z-partner-uber z-partner-solo"
-              >
-                <strong>Uber Eats</strong>
-                <span>Commission applicable</span>
-              </a>
+              <h3>Suivez-nous</h3>
               <p className="z-partners-note">
-                Pour soutenir notre commerce local et éviter les commissions,
-                privilégiez la <a href="#commander">commande en direct</a>.
+                Les nouveautés et la <strong>Pizza du Moment</strong> sont annoncées
+                sur <a href="https://www.facebook.com/profile.php?id=61566530946394" target="_blank" rel="noopener noreferrer">Facebook</a>
+                {' '}et <a href="https://www.instagram.com/vorace.pizza/" target="_blank" rel="noopener noreferrer">Instagram @vorace.pizza</a>.
+                Pour réserver, c'est ici en <a href="#commander">direct</a> ou
+                au <a href="tel:+33769917382">07 69 91 73 82</a>.
               </p>
             </div>
           </motion.div>
