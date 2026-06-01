@@ -655,11 +655,11 @@ section{padding:120px 0;position:relative}
     </div>
     <div class="gallery-grid reveal">
       <div class="gallery-item"><img src="photos/interieur-vorace.jpg" alt="Intérieur Vorace : four à pizza et bar en brique"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80" alt="Pizza Margherita à la sortie du four"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1571066811602-716837d681de?auto=format&fit=crop&w=800&q=80" alt="Pizza Tartufo signature"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=800&q=80" alt="Pizza Piccante au chorizo"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80" alt="Pizza Cremosa à la burrata"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=1200&q=80" alt="Pizza Carbonara au Guanciale"></div>
+      <div class="gallery-item"><img src="photos/2025-06-02.jpg" alt="Pizza Cremosa devant le logo Vorace"></div>
+      <div class="gallery-item"><img src="photos/2025-10-19.jpg" alt="Pizza Piccante chorizo roquette"></div>
+      <div class="gallery-item"><img src="photos/3.jpg" alt="Pizza Tartufo à la truffe"></div>
+      <div class="gallery-item"><img src="photos/2025-10-31.jpg" alt="Pizza Cremosa jambon de Parme et burrata"></div>
+      <div class="gallery-item"><img src="photos/2025-11-04.jpg" alt="Pizza Pistacchio à la mortadelle pistache"></div>
     </div>
   </div>
 </section>
@@ -827,28 +827,28 @@ section{padding:120px 0;position:relative}
 /* ===== MENU DATA ===== */
 const PIZZAS = {
   creation: [
-    {name:'Tartufo',price:'18 €',desc:'Crème à la truffe, Fior di Latte. Après cuisson : burrata à la truffe, jambon cuit truffé.',img:'https://images.unsplash.com/photo-1571066811602-716837d681de?auto=format&fit=crop&w=600&q=80',badge:'Signature'},
-    {name:'Pistacchio',price:'17 €',desc:'Pesto de pistaches grillées, Fior di Latte. Après cuisson : burrata di Buffalo, mortadelle à la pistache, brisures de pistache.',img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',badge:'Signature'},
-    {name:'Cremosa',price:'16 €',desc:'Crème de burrata aux zests de citron, oignon rouge, Fior di Latte, jambon de Parme affiné 18 mois, tomates séchées, pesto maison.',img:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80'},
-    {name:'Carbonara',price:'15 €',desc:'Crème de carbonara maison, Guanciale de Porc Noir de Bigorre grillé, Fior di Latte. Après cuisson : poivre, tranches de guanciale.',img:'https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=600&q=80'},
-    {name:'Piccante',price:'14 €',desc:'Tomate Bio des Pouilles, Fior di Latte, Spianata Piccante. Après cuisson : roquette, coulis de poivrons grillés, huile pimentée.',img:'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=600&q=80',badge:'Épicée'}
+    {name:'Tartufo',price:'18 €',desc:'Crème à la truffe, Fior di Latte. Après cuisson : burrata à la truffe, jambon cuit truffé.',img:'photos/3.jpg',badge:'Signature'},
+    {name:'Pistacchio',price:'17 €',desc:'Pesto de pistaches grillées, Fior di Latte. Après cuisson : burrata di Buffalo, mortadelle à la pistache, brisures de pistache.',img:'photos/2025-11-04.jpg',badge:'Signature'},
+    {name:'Cremosa',price:'16 €',desc:'Crème de burrata aux zests de citron, oignon rouge, Fior di Latte, jambon de Parme affiné 18 mois, tomates séchées, pesto maison.',img:'photos/2025-10-31.jpg'},
+    {name:'Carbonara',price:'15 €',desc:'Crème de carbonara maison, Guanciale de Porc Noir de Bigorre grillé, Fior di Latte. Après cuisson : poivre, tranches de guanciale.',img:'photos/9.jpg'},
+    {name:'Piccante',price:'14 €',desc:'Tomate Bio des Pouilles, Fior di Latte, Spianata Piccante. Après cuisson : roquette, coulis de poivrons grillés, huile pimentée.',img:'photos/2025-10-19.jpg',badge:'Épicée'}
   ],
   classique: [
-    {name:'Margherita',price:'12 €',desc:'Tomate Bio des Pouilles, basilic frais, Fior di Latte, huile d\'olive.',img:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80',badge:'Bio'},
+    {name:'Margherita',price:'12 €',desc:'Tomate Bio des Pouilles, basilic frais, Fior di Latte, huile d\'olive.',img:'photos/4.jpg',badge:'Bio'},
     {name:'Chèvre Miel',price:'14 €',desc:'Base crème, Fior di Latte, bûche de chèvre frais du Peuple des Chèvres, miel de romarin des Frères Sarriguet, romarin.',img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',badge:'Bio'},
-    {name:'Végétarienne',price:'14 €',desc:'Crème de champignons, Fior di Latte, légumes marinés ou grillés. Après cuisson : parmesan 24 mois, pesto maison.',img:'https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?auto=format&fit=crop&w=600&q=80',badge:'Bio'},
-    {name:'Regina',price:'15 €',desc:'Tomate Bio des Pouilles, jambon cuit sans nitrite, Fior di Latte, champignons, origan, oignon rouge, poivre du moulin.',img:'https://images.unsplash.com/photo-1542528180-7bbb1f1f7b9c?auto=format&fit=crop&w=600&q=80'},
-    {name:'Tartiflette',price:'17 €',desc:'Base crème, pomme de terre, compotée d\'oignons, Reblochon au lait cru, Ventrèche de Porc Noir de Bigorre.',img:'https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=600&q=80'}
+    {name:'Végétarienne',price:'14 €',desc:'Crème de champignons, Fior di Latte, légumes marinés ou grillés. Après cuisson : parmesan 24 mois, pesto maison.',img:'photos/2025-02-15.jpg',badge:'Bio'},
+    {name:'Regina',price:'15 €',desc:'Tomate Bio des Pouilles, jambon cuit sans nitrite, Fior di Latte, champignons, origan, oignon rouge, poivre du moulin.',img:'photos/8.jpg'},
+    {name:'Tartiflette',price:'17 €',desc:'Base crème, pomme de terre, compotée d\'oignons, Reblochon au lait cru, Ventrèche de Porc Noir de Bigorre.',img:'photos/2.jpg'}
   ],
   fromages: [
-    {name:'4 Formaggi',price:'15 €',desc:'Fior di Latte, Scamorza fumée, gorgonzola, pecorino semi-affiné.',img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80',badge:'Italie'},
+    {name:'4 Formaggi',price:'15 €',desc:'Fior di Latte, Scamorza fumée, gorgonzola, pecorino semi-affiné.',img:'photos/7.jpg',badge:'Italie'},
     {name:'4 Fromages',price:'15 €',desc:'Base crème, tomme de la ferme de Prouzic, Fourme d\'Ambert, Reblochon au lait cru, raclette de chèvre Bio des Hounts.',img:'https://images.unsplash.com/photo-1593504049359-74330189a345?auto=format&fit=crop&w=600&q=80',badge:'France'}
   ],
   autres: [
+    {name:'Cookie Pistache',price:'5 €',desc:'Cookie fourré à la crème de pistache artisanale.',img:'photos/5.jpg',badge:'Dessert'},
     {name:'Cookie Choco',price:'5 €',desc:'Cookie maison aux pépites de chocolat.',img:'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=600&q=80',badge:'Dessert'},
-    {name:'Cookie Pistache',price:'5 €',desc:'Cookie fourré à la crème de pistache artisanale.',img:'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=600&q=80',badge:'Dessert'},
-    {name:'Pizza du moment',price:'—',desc:'En fonction des mois et des saisons. La recette est annoncée sur Facebook et Instagram. Demandez à Flo.',img:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80',badge:'Saison'},
-    {name:'Petite Taille',price:'-15 %',desc:'Toutes les pizzas sont disponibles en petite taille, avec -15 % sur le prix initial. Idéal pour les enfants ou les petites faims.',img:'https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=600&q=80',badge:'Option'}
+    {name:'Pizza du moment',price:'—',desc:'En fonction des mois et des saisons. La recette est annoncée sur Facebook et Instagram. Demandez à Flo.',img:'photos/2025-06-02.jpg',badge:'Saison'},
+    {name:'Petite Taille',price:'-15 %',desc:'Toutes les pizzas sont disponibles en petite taille, avec -15 % sur le prix initial. Idéal pour les enfants ou les petites faims.',img:'photos/pizzas.jpg',badge:'Option'}
   ]
 };
 
