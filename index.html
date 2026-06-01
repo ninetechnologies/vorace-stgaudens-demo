@@ -101,21 +101,28 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 /* ===== HERO ===== */
 .hero{
   position:relative;min-height:100vh;
-  background:
-    linear-gradient(180deg,rgba(46,8,16,.55) 0%,rgba(46,8,16,.75) 100%),
-    url('https://images.unsplash.com/photo-1593504049359-74330189a345?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+  background:var(--bordeaux-deep);
   color:var(--cream);
   display:flex;align-items:center;justify-content:center;
   padding:120px 24px 80px;
   text-align:center;
   overflow:hidden;
 }
+.hero-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:0;
+}
+.hero-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(46,8,16,.55) 0%,rgba(46,8,16,.78) 100%);
+  pointer-events:none;
+}
 .hero::before{
-  content:"";position:absolute;inset:0;
+  content:"";position:absolute;inset:0;z-index:1;
   background:radial-gradient(ellipse at center, transparent 0%, rgba(46,8,16,.4) 100%);
   pointer-events:none;
 }
-.hero-content{position:relative;z-index:2;max-width:780px;animation:fadeUp 1.2s cubic-bezier(.2,.8,.2,1) both}
+.hero-content{position:relative;z-index:3;max-width:780px;animation:fadeUp 1.2s cubic-bezier(.2,.8,.2,1) both}
 .hero-badge{
   display:inline-flex;align-items:center;gap:8px;
   background:rgba(245,239,230,.12);
@@ -156,7 +163,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .btn-dark{background:var(--bordeaux);color:var(--cream)}
 .btn-dark:hover{background:var(--bordeaux-dark);transform:translateY(-2px);box-shadow:0 14px 36px rgba(107,22,32,.4)}
 .hero-scroll{
-  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);z-index:3;
   font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,239,230,.6);
   display:flex;flex-direction:column;align-items:center;gap:12px;
   animation:bounce 2.4s ease-in-out infinite;
@@ -449,7 +456,7 @@ section{padding:120px 0;position:relative}
   .contact-map,.contact-map iframe{min-height:380px}
   .footer-top{grid-template-columns:1fr;gap:32px}
   .footer-bottom{flex-direction:column;text-align:center}
-  .hero{background-attachment:scroll;padding:100px 20px 60px;min-height:92vh}
+  .hero{padding:100px 20px 60px;min-height:92vh}
   .hero h1{font-size:clamp(52px,16vw,84px)}
   .reviews-header{flex-direction:column;align-items:flex-start}
 }
@@ -480,6 +487,11 @@ section{padding:120px 0;position:relative}
 
 <!-- ===== HERO ===== -->
 <header class="hero">
+  <video class="hero-video" autoplay muted loop playsinline poster="videos/hero-poster.jpg">
+    <source src="videos/hero-mobile.mp4" type="video/mp4" media="(max-width: 767px)">
+    <source src="videos/hero-desktop.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-badge">
       <span class="star">★</span>
@@ -507,7 +519,7 @@ section{padding:120px 0;position:relative}
   <div class="container">
     <div class="about-grid">
       <div class="about-image reveal">
-        <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=900&q=80" alt="Le pizzaiolo en train de préparer une pizza">
+        <img src="photos/interieur-vorace.jpg" alt="L'intérieur de Vorace : bar en brique, four à pizza, suspensions vintage">
       </div>
       <div class="reveal">
         <span class="section-label">La maison</span>
@@ -642,12 +654,12 @@ section{padding:120px 0;position:relative}
       <h2 class="section-title">Dans les <em>coulisses</em>.</h2>
     </div>
     <div class="gallery-grid reveal">
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1200&q=80" alt="Pizza margherita au feu de bois"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80" alt="Four à bois en action"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1593504049359-74330189a345?auto=format&fit=crop&w=800&q=80" alt="Pizza au four"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1571066811602-716837d681de?auto=format&fit=crop&w=800&q=80" alt="Salle du restaurant"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=800&q=80" alt="Pizza diavola"></div>
-      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1542528180-7bbb1f1f7b9c?auto=format&fit=crop&w=1200&q=80" alt="Ambiance restaurant"></div>
+      <div class="gallery-item"><img src="photos/interieur-vorace.jpg" alt="Intérieur Vorace : four à pizza et bar en brique"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80" alt="Pizza Margherita à la sortie du four"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1571066811602-716837d681de?auto=format&fit=crop&w=800&q=80" alt="Pizza Tartufo signature"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=800&q=80" alt="Pizza Piccante au chorizo"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80" alt="Pizza Cremosa à la burrata"></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1590947132387-155cc02f3212?auto=format&fit=crop&w=1200&q=80" alt="Pizza Carbonara au Guanciale"></div>
     </div>
   </div>
 </section>
