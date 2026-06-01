@@ -4,3 +4,5 @@ node_modules
 *.log
 
 .vercel
+_backup_lowres
+
