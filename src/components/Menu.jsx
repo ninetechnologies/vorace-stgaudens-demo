@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PIZZAS, CATEGORIES, CALZONES, FAMILIALE, DESSERTS, SUPPLEMENTS } from '../data/pizzas.js';
+import { PIZZAS, CATEGORIES, CALZONES, FAMILIALE, DESSERTS, SUPPLEMENTS, PIZZA_DU_MOMENT, PETITE_TAILLE } from '../data/pizzas.js';
 import { useCart } from '../hooks/useCart.jsx';
 import PizzaPlaceholder from './PizzaPlaceholder.jsx';
 import PizzaCustomizer from './PizzaCustomizer.jsx';
@@ -259,27 +259,21 @@ export default function Menu() {
           transition={{ duration: 0.6 }}
         >
           <div className="z-extras-card z-extras-familiale">
-            <span className="z-extras-tag">À partager</span>
-            <h3>{FAMILIALE.name}</h3>
-            <p>{FAMILIALE.description}</p>
-            <div className="z-extras-price">{fmt(FAMILIALE.price)}</div>
+            <span className="z-extras-tag">Saison</span>
+            <h3>{PIZZA_DU_MOMENT.name}</h3>
+            <p>{PIZZA_DU_MOMENT.description}</p>
+            <div className="z-extras-price">Demandez à Flo</div>
           </div>
 
           <div className="z-extras-card">
-            <h3>Les Calzones</h3>
-            <ul className="z-extras-list">
-              {CALZONES.map((c) => (
-                <li key={c.id}>
-                  <span>{c.name}</span>
-                  <span>{fmt(c.price)}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="z-extras-note">Au choix, dans la garniture de votre pizza préférée.</p>
+            <span className="z-extras-tag">Option</span>
+            <h3>{PETITE_TAILLE.label}</h3>
+            <p>{PETITE_TAILLE.description}</p>
+            <div className="z-extras-price">−15 %</div>
           </div>
 
           <div className="z-extras-card">
-            <h3>Desserts</h3>
+            <h3>Desserts maison</h3>
             <ul className="z-extras-list">
               {DESSERTS.map((d) => (
                 <li key={d.name}>
