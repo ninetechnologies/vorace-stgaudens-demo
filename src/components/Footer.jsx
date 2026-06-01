@@ -21,19 +21,19 @@ export default function Footer() {
           <div className="z-footer-col">
             <h4>Carte</h4>
             <ul>
-              <li><a href="#menu">Toutes les pizzas</a></li>
-              <li><a href="#menu">Calzones</a></li>
-              <li><a href="#menu">Pizza Familiale</a></li>
-              <li><a href="#menu">Desserts</a></li>
+              <li><a href="#menu">Les Créations</a></li>
+              <li><a href="#menu">Les Classiques</a></li>
+              <li><a href="#menu">Les Fromages</a></li>
+              <li><a href="#menu">Desserts maison</a></li>
             </ul>
           </div>
 
           <div className="z-footer-col">
-            <h4>Commander</h4>
+            <h4>Nous joindre</h4>
             <ul>
-              <li><a href="#commander">En direct (sans commission)</a></li>
-              <li><a href="https://www.ubereats.com/fr/store/vorace-stgaudens/QwHC6CbvVIWzlPZwkwQNHQ?diningMode=DELIVERY&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMlNhaW50LUdhdWRlbnMlMjIlMkMlMjJyZWZlcmVuY2UlMjIlM0ElMjJDaElKYVpJVUtaRDhxQklSS1AySDZYUjNVajglMjIlMkMlMjJyZWZlcmVuY2VUeXBlJTIyJTNBJTIyZ29vZ2xlX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuMTA2ODk1JTJDJTIybG9uZ2l0dWRlJTIyJTNBMC43MjM3NjI5OTk5OTk5OTk5JTdE" target="_blank" rel="noopener noreferrer">Uber Eats</a></li>
-              <li><a href="tel:+33769917382">Par téléphone</a></li>
+              <li><a href="#commander">Réserver une table</a></li>
+              <li><a href="tel:+33769917382">07 69 91 73 82</a></li>
+              <li><a href="#contact">Itinéraire</a></li>
             </ul>
           </div>
 

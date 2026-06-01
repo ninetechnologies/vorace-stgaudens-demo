@@ -123,13 +123,13 @@ export default function Order() {
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6 }}
         >
-          <span className="z-eyebrow">Commande en ligne</span>
+          <span className="z-eyebrow">Réservation & commande</span>
           <h2 className="z-order-title">
-            Votre pizza, <em>chez vous</em> en 30 min.
+            Votre table chez Flo, <em>réservée en 2 minutes</em>.
           </h2>
           <p className="z-order-intro">
-            Pas de commission Uber qui s'ajoute, pas d'attente au téléphone.
-            Commandez directement, on est sur la route dès que c'est cuit.
+            Sur place ou à emporter, dès 18h30 du mardi au samedi. Réservez votre
+            créneau, on garde la table au chaud le temps que la pizza cuit.
           </p>
         </motion.div>
 
