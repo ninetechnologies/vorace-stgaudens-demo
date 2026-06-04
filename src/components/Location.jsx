@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { LOCATIONS } from '../data/menu.js';
 
-const HOURS = 'Tous les jours · 11h00 – 14h30 · 18h00 – 23h00';
+const HOURS = 'Mardi au samedi · 18h30 – 21h30 · Fermé dimanche & lundi';
 
 export default function Location() {
   return (
@@ -17,11 +17,11 @@ export default function Location() {
         >
           <span className="z-eyebrow">Nous trouver</span>
           <h2 className="z-location-title">
-            Deux adresses <em>dans le Comminges</em>.
+            Au coeur <em>de Saint-Gaudens</em>.
           </h2>
           <p className="z-location-intro">
-            Le même goût, deux fois plus près de chez vous. À emporter, en livraison,
-            ou à déguster sur place.
+            La pizza de Flo, travaillée et cuite sous vos yeux. À déguster sur place
+            ou à emporter, au 59 Avenue de l'Isle.
           </p>
         </motion.div>
 
@@ -76,8 +76,8 @@ export default function Location() {
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
         >
-          Disponible aussi en livraison via les plateformes. Pour soutenir le commerce
-          et éviter les commissions, privilégiez la <a href="#commander">commande en direct</a>.
+          Pour réserver votre table ou commander à emporter, le plus simple reste la{' '}
+          <a href="#commander">commande en direct</a> : pas d'attente au téléphone, aucune commission.
         </motion.p>
       </div>
 

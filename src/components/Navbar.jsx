@@ -4,7 +4,7 @@ import Logo from './Logo.jsx';
 
 const NAV_LINKS = [
   { href: '#menu', label: 'Notre carte' },
-  { href: '#commander', label: 'Commander' },
+  { href: '#commander', label: 'Réserver' },
   { href: '#avis', label: 'Avis' },
   { href: '#contact', label: 'Nous trouver' },
 ];
@@ -59,7 +59,7 @@ export default function Navbar() {
               </svg>
               <span>07 69 91 73 82</span>
             </a>
-            <a href="#commander" className="z-btn z-btn-primary z-nav-btn">Commander</a>
+            <a href="#commander" className="z-btn z-btn-primary z-nav-btn">Réserver</a>
           </div>
 
           <button className="z-nav-burger" onClick={() => setMenuOpen(true)} aria-label="Ouvrir le menu">

@@ -23,19 +23,19 @@ export default function Footer() {
           <div className="z-footer-col">
             <h4>Notre carte</h4>
             <ul>
-              <li><a href="#menu">Kebab & Naan</a></li>
-              <li><a href="#menu">Tacos</a></li>
-              <li><a href="#menu">Pizzas</a></li>
-              <li><a href="#menu">Burgers & Poulet</a></li>
+              <li><a href="#menu">Les Créations</a></li>
+              <li><a href="#menu">Les Classiques</a></li>
+              <li><a href="#menu">Les Fromages</a></li>
+              <li><a href="#menu">Desserts maison</a></li>
             </ul>
           </div>
 
           <div className="z-footer-col">
-            <h4>Commander</h4>
+            <h4>Réserver</h4>
             <ul>
               <li><a href="#commander">En direct (sans commission)</a></li>
+              <li><a href="#commander">Réserver une table</a></li>
               <li><a href="tel:+33769917382">Saint-Gaudens · 07 69 91 73 82</a></li>
-              <li><a href="tel:+33769917382">Gourdan · 07 69 91 73 82</a></li>
             </ul>
           </div>
 
@@ -53,7 +53,7 @@ export default function Footer() {
                 </svg>
               </a>
             </div>
-            <p className="z-footer-tagline">4,5 ★ · 126 avis Google</p>
+            <p className="z-footer-tagline">4,9 ★ · 87 avis Google</p>
           </div>
         </motion.div>
 
@@ -68,7 +68,7 @@ export default function Footer() {
           </span>
         </div>
 
-        <p className="z-footer-credit">Démonstration réalisée pour Grill &amp; Chicken</p>
+        <p className="z-footer-credit">Démonstration réalisée pour Vorace</p>
       </div>
 
       <style>{`

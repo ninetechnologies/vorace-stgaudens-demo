@@ -229,8 +229,8 @@ export default function Order() {
             Votre table chez Flo, <em>réservée en 2 minutes</em>.
           </h2>
           <p className="z-order-intro">
-            Pas de commission Uber qui s'ajoute, pas d'attente au téléphone.
-            Commandez directement, on est sur la route dès que c'est cuit.
+            Pas d'attente au téléphone, aucune commission. Vous choisissez votre
+            créneau, Flo lance la pâte au bon moment pour que ce soit prêt à l'heure.
           </p>
         </motion.div>
 

@@ -179,8 +179,8 @@ export default function Menu() {
         </div>
 
         <p className="z-menu-note">
-          Tacos et sandwichs entièrement personnalisables (viandes, sauces, gratinage,
-          frites, suppléments). Carte et prix relevés sur place.
+          Toutes nos pizzas sont personnalisables : taille (petite ou normale) et
+          suppléments au choix. Carte et prix relevés sur la carte officielle de Flo.
         </p>
       </div>
 

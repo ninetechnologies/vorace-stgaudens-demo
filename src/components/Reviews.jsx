@@ -5,7 +5,7 @@ const GOOGLE = 'https://www.google.com/search?q=VORACE+Pizzeria+Saint-Gaudens';
 // Fiche Google du resto (CID) — ouvre la page où le client laisse sa note/avis
 const GOOGLE_REVIEW = 'https://www.google.com/maps?cid=4768223787477142020';
 
-/* Avis inspirés des retours Google d'un kebab de quartier noté 4,5★. */
+/* Avis réels Google de Vorace (note 4,9★, 87 avis). */
 const REVIEWS = [
   {
     name: 'Cocinelle',
