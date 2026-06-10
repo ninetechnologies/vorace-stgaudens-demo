@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 
 const GOOGLE = 'https://www.google.com/search?q=VORACE+Pizzeria+Saint-Gaudens';
-// Fiche Google Vorace — ouvre la recherche Maps qui résout sur la fiche du resto
-const GOOGLE_REVIEW = 'https://www.google.com/maps/search/?api=1&query=VORACE+Pizzeria+59+Avenue+de+l%27Isle+Saint-Gaudens';
+// Fiche Google Vorace exacte (CID réel) — onglet avis ouvert
+const GOOGLE_REVIEW = 'https://www.google.com/maps?cid=14775346625625519250';
 
 /* Avis réels Google de Vorace (note 4,9★, 87 avis). */
 const REVIEWS = [
